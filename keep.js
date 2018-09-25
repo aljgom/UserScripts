@@ -15,7 +15,7 @@ console.log(GM_info.script.name+"%c Script: "+document.location.toString(),'colo
 
     var sleep = ms => new Promise(resolve=>setTimeout(resolve,ms))
 
-    await sleep(2000);
+    await sleep(1000);
     document.getElementsByClassName('RveJvd snByac')[2].click();          // click on select none
 
 
@@ -31,8 +31,9 @@ console.log(GM_info.script.name+"%c Script: "+document.location.toString(),'colo
     })
 
 
-    document.getElementsByClassName('E7QdY espmsb')[61].scrollIntoView(); // scroll to element before keep because keep is covered by bar
-    await sleep(2000);
+    keep.scrollIntoView();
+    window.scrollTo(0,window.scrollY-200)   // scroll up a bit because keep is covered by bar
+    await sleep(1000);
     keep.click();
 
     document.getElementsByClassName('RveJvd snByac')[20].addEventListener('click', async()=>{
