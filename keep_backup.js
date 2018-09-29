@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Keep Backups
+// @name         Keep Backup
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  -
+// @description  Deselects all products and selects Google Keep to back it up
 // @author       aljgom
 // @match        https://takeout.google.com/settings/takeout
 // @match        https://takeout.google.com/settings/takeout/
