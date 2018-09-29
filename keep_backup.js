@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Keep Backup
+// @name         Keep Backups
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  -
