@@ -8,7 +8,7 @@
 // @grant        none
 // ==/UserScript==
 
-// Removes "topic" from stackoverflow tab title, so quetion will be visible instead
+// Removes "topic" from stackoverflow tab title, so question will be visible instead
 
 (function() {
     'use strict';
