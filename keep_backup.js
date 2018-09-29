@@ -30,12 +30,13 @@ console.log(GM_info.script.name+"%c Script: "+document.location.toString(),'colo
         }
     })
 
-
+    // Scroll to Google Keep toggle
     keep.scrollIntoView();
     window.scrollTo(0,window.scrollY-200)   // scroll up a bit because keep is covered by bar
     await sleep(1000);
     keep.click();
 
+    // Add listener to 'select' button so that 'backup' button will be pressed automatically
     document.getElementsByClassName('RveJvd snByac')[20].addEventListener('click', async()=>{
 	    await sleep(1000);
 	    document.getElementsByClassName('RveJvd snByac')[22].click();
