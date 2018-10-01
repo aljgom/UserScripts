@@ -21,7 +21,7 @@
 // @match        https://services2.capitalone.com/*
 // @match        https://secure.bankofamerica.com/*
 // @match        https://myaccounts.capitalone.com/*
-// @grant      unsafewindow
+// @grant        unsafewindow
 // ==/UserScript==
 /* jshint -W097 */
 
