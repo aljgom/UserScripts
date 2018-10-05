@@ -14,7 +14,9 @@
 // @grant      window.close
 // @copyright  2012+, You
 // ==/UserScript==
-console.log("%c Youtube Script: "+document.location.toString(),'color:green');
+
+
+// uses waitFor from AllPages script, make sure it runs before this.
 
 (async ()=>{
     // why is this part run? breaks ycapi download cuz never matches url
