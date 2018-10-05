@@ -274,41 +274,41 @@ console.log("%c Youtube Script: "+document.location.toString(),'color:green');
 
     /*** INSERT CSS ***/
     var css = `
-body{
-background:rgb(255,96,88);
-}
-button{
-display: inline-block;
-height: 28px;
-border: solid 1px transparent;
-padding: 0 10px;
-font-weight: bold;
-text-decoration: none;
-white-space: nowrap;
-line-height: normal;
-cursor: pointer;
-border-radius: 2px;
-border-color: #d3d3d3;
-background: #f8f8f8;
-color: #3a3a3a;
-font-size: 16px;
-box-shadow: 0 1px 0 rgba(0,0,0,0.05);
-margin: 1px;
-}
-button:hover{
-border-color: #c6c6c6;
-background: #f0f0f0;
-box-shadow: 0 1px 0 rgba(0,0,0,0.10);
-}
-button:active{
-border-color: #c6c6c6;
-background: #e9e9e9;
-box-shadow: inset 0 1px 0 #ddd;
-}
-button:focus {
-outline: 0;
-}
-`;
+        body{
+        background:rgb(255,96,88);
+        }
+        button{
+        display: inline-block;
+        height: 28px;
+        border: solid 1px transparent;
+        padding: 0 10px;
+        font-weight: bold;
+        text-decoration: none;
+        white-space: nowrap;
+        line-height: normal;
+        cursor: pointer;
+        border-radius: 2px;
+        border-color: #d3d3d3;
+        background: #f8f8f8;
+        color: #3a3a3a;
+        font-size: 16px;
+        box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+        margin: 1px;
+        }
+        button:hover{
+        border-color: #c6c6c6;
+        background: #f0f0f0;
+        box-shadow: 0 1px 0 rgba(0,0,0,0.10);
+        }
+        button:active{
+        border-color: #c6c6c6;
+        background: #e9e9e9;
+        box-shadow: inset 0 1px 0 #ddd;
+        }
+        button:focus {
+        outline: 0;
+        }
+        `;
     style = document.createElement('style');
 
     if (style.styleSheet) {
