@@ -212,7 +212,7 @@
                                                                 redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
                                                                 redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
     if( url                                                     .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
-        //setAccountChooseAlert('');
+        loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
     }
 
 
