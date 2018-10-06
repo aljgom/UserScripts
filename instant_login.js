@@ -86,9 +86,9 @@
         //loginWhenFieldSet( gi("passcode1"), gi("hp-sign-in-btn"));
     }
 
-/** BARCLAYCARD **/                                             redirect("https://www.barclaycardus.com/", "https://www.barclaycardus.com/servicing/login");
+/** BARCLAYCARD **/                                             redirect("https://cards.barclaycardus.com/", "https://www.barclaycardus.com/servicing/home?secureLogin=");
     if( url                                                     .match("https://www.barclaycardus.com/servicing/authenticate") || url.match("https://www.barclaycardus.com/servicing/home") ){
-        //loginWhenFieldSet( password, gi("loginButton") );
+        loginWhenFieldSet( await waitFor(()=>gi('password')), gi("loginButton") );
     }
 
     redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
