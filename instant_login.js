@@ -91,7 +91,7 @@
         loginWhenFieldSet( await waitFor(()=>gi('password')), gi("loginButton") );
     }
 
-    redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
+                                                                redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
 
 /*** CHASE **/                                                //  redirect("https://secure07a.chase.com/web/auth/dashboard#/dashboard/index/index","https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
     if( url                                                     == "https://www.chase.com/" || url == "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline"){
@@ -116,7 +116,7 @@
         loginWhenFieldSet( password, gi("loginButton") );
     }
 
-/*** CREDITKARMA ***/                                         redirect("https://www.creditkarma.com/", "https://www.creditkarma.com/auth/logon");
+/*** CREDITKARMA ***/                                           redirect("https://www.creditkarma.com/", "https://www.creditkarma.com/auth/logon");
     if(url                                                      .match("https://www.creditkarma.com/auth/logon") ){
         loginWhenFieldSet( password, gi("Logon") );
     }
@@ -165,7 +165,7 @@
     }
 
 
-/*** WALLETHUB **/                                                 redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
+/*** WALLETHUB **/                                              redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
     if(url                                                      .match("https://wallethub.com/join/login")){
         // only works when right clicking submit button before this code. (?)
         loginWhenFieldSet( await waitFor(()=> document.querySelectorAll('[name=pw]')[0]), document.querySelectorAll('button>span')[0] );
