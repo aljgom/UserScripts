@@ -3,12 +3,12 @@
 // @namespace  aljgom
 // @version    0.1
 // @description  Automates login forms to log in automatically to pages.
-//               I use it in conjunction with a password manager (LastPass), and it clicks log in buttons after LastPass fills up the required fields
+//               I use it in conjunction with a password manager (LastPass),
+//               and it clicks log in buttons after LastPass fills up the required fields
 //               Uses WaitFor function defined in All Pages script
 // @match      http://*/*
 // @match      https://*/*
 // @grant      window.close
-// @copyright  2012+, aljgom
 // ==/UserScript==
 
 (async ()=>{
