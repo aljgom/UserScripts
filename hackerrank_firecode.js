@@ -28,7 +28,6 @@
             },1000)
         }
 
-
         // Add area where cloned output will be placed
         var output = await waitFor(()=>$('.fs-container')[0]);
         var prev = document.createElement('div');
@@ -38,9 +37,7 @@
         // Clone output when submit botton is pressed, to keep the previous output visible
         function cloneOutput(){
             prev.innerHTML = '';
-            if(gc('output-area-wrap')[0]){
-                prev.appendChild( gc('output-area-wrap')[0].cloneNode(true) );
-            }
+            prev.appendChild( output.cloneNode(true) );
         }
         var run_code = await waitFor(()=> gc('bb-compile')[0]);
         run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
