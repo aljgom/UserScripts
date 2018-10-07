@@ -29,18 +29,40 @@
         }
 
         // Add area where cloned output will be placed
-        var output = await waitFor(()=>$('.fs-container')[0]);
+        var output = await waitFor(()=>gc('challenge-response fs-container')[0]);
         var prev = document.createElement('div');
         prev.className = 'prev-output';
         output.parentElement.insertBefore(prev, output.nextSibling); // insert cointainer after output
 
         // Clone output when submit botton is pressed, to keep the previous output visible
         function cloneOutput(){
+            unfloatOutput();
             prev.innerHTML = '';
             prev.appendChild( output.cloneNode(true) );
         }
         var run_code = await waitFor(()=> gc('bb-compile')[0]);
         run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
+
+        // Make output float when run_code is clicked, put it back in original position if output clicked
+        run_code.addEventListener('click', function floatOutput(){
+            window.scrollTo(0,window.scrollY - 700);
+            Object.assign(output.style,{
+                position: 'fixed',
+                top: '100%',
+                transform: 'translateY(-100%)',
+                left: 0,
+                zIndex: 100,
+                width: '30%'
+            });
+        });
+        function unfloatOutput(){
+            Object.assign(output.style,{
+                position: 'relative',
+                transform: '',
+                width:'100%'
+            });
+        }
+        output.addEventListener('click', unfloatOutput);
 
         // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
         document.addEventListener('keydown', function fkey(e){
