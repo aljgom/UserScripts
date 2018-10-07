@@ -19,7 +19,7 @@
 
     /* HACKERRANK */
     if(url.match('hackerrank')){
-        if(url.match('challenges')){  // new layout, contests still have old
+        if(url.match('challenges')){                                    // new layout, contests still have old
             // Change size of output
             setInterval(()=>{
                 document.getElementsByClassName('compile-output-message').forEach((e)=>{
@@ -30,18 +30,20 @@
 
 
         // Add area where cloned output will be placed
-        var container = await waitFor(()=>$('.fs-container')[0]);               //element in which we'll insert prev output
+        var output = await waitFor(()=>$('.fs-container')[0]);
         var prev = document.createElement('div');
         prev.className = 'prev-output';
-        container.append(prev);
+        output.parentElement.insertBefore(prev, output.nextSibling); // insert cointainer after output
 
         // Clone output when submit botton is pressed, to keep the previous output visible
         function cloneOutput(){
             prev.innerHTML = '';
-            prev.appendChild( gc('challenge-response')[0].cloneNode(true) );
+            if(gc('output-area-wrap')[0]){
+                prev.appendChild( gc('output-area-wrap')[0].cloneNode(true) );
+            }
         }
         var run_code = await waitFor(()=> gc('bb-compile')[0]);
-        run_code.addEventListener('mousedown',cloneOutput);  // mousedown  instead of click so it fires before submission
+        run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
 
         // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
         document.addEventListener('keydown', function fkey(e){
