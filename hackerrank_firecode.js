@@ -36,7 +36,7 @@
 
         // Clone output when submit botton is pressed, to keep the previous output visible
         function cloneOutput(){
-            unfloatOutput();
+            resetOutputPosition();
             prev.innerHTML = '';
             prev.appendChild( output.cloneNode(true) );
         }
@@ -44,25 +44,44 @@
         run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
 
         // Make output float when run_code is clicked, put it back in original position if output clicked
-        run_code.addEventListener('click', function floatOutput(){
-            window.scrollTo(0,window.scrollY - 700);
+        function floatOutput(){
             Object.assign(output.style,{
                 position: 'fixed',
                 top: '100%',
                 transform: 'translateY(-100%)',
                 left: 0,
-                zIndex: 100,
+                zIndex: 10,
                 width: '30%'
             });
-        });
+            output_floating = true;
+        }
+        // minimizes output (still floating)
         function unfloatOutput(){
+            Object.assign(output.style,{
+                // position: 'relative',
+                transform: 'translateY(-10%)',
+                //width:'100%'
+            });
+            output_floating = false;
+        }
+        // return output to original position before cloning
+        function resetOutputPosition(){
             Object.assign(output.style,{
                 position: 'relative',
                 transform: '',
-                width:'100%'
+                width:'100%',
+                zIndex: 1
             });
         }
-        output.addEventListener('click', unfloatOutput);
+        function toggleFloat(){
+            if(output_floating) unfloatOutput();
+            else                floatOutput();
+        }
+
+        var output_floating = false;
+        run_code.addEventListener('click', floatOutput);
+        run_code.addEventListener('click', ()=>window.scrollTo(0,window.scrollY - 900));
+        output.addEventListener('click', toggleFloat);
 
         // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
         document.addEventListener('keydown', function fkey(e){
