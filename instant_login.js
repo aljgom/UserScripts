@@ -173,9 +173,30 @@
                                                                 redirect("https://www.paypal.com/","https://www.paypal.com/signin");
                                                                 redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
 /** PAYPAL **/                                                  redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
-        if( url                                                 .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
-            loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
+    if( url                                                     .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
+        loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
+    }
+
+                                                                redirect("https://play.google.com/store/apps/details?id=com.personalcapital.pcapandroid",  "https://home.personalcapital.com/page/login/goHome");  // from google play app page
+                                                                setTimeout(()=>{
+/** PERSONAL CAPITAL **/                                            redirect( "https://www.personalcapital.com/" , "https://home.personalcapital.com/page/login/goHome" );  },2000);
+    if( url                                                     .match("https://home.personalcapital.com/page/login/")){
+        // enter username if password form hidden
+        if(gi('form-password').style.display != 'block') {
+            let user_field = await waitFor(()=>gc("input-xlarge validate")[0])
+            user_field.value = getStorageValue('email');
+            gc("btn btn-primary")[0].click() ;
+            await sleep(3000);
+            document.location.reload();         // reaload so LastPass will fill up password field
         }
+        // password
+        loginWhenFieldSet( await waitFor(()=>document.getElementsByName("passwd")[0]), gc("btn btn-primary")[1]);
+    }
+                                                                // redirect to transactions tab
+                                                                if(url == "https://home.personalcapital.com/page/login/app#/dashboard" ||
+                                                                   url == "https://home.personalcapital.com/page/login/goHome#/all-transactions" ||
+                                                                   url == "https://home.personalcapital.com/page/login/app")
+                                                                    document.location = 'https://home.personalcapital.com/page/login/app#/all-transactions';
 
 
                                                                 redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");
