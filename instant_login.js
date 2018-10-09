@@ -20,7 +20,7 @@
 
     /**
      * Keep track if we're submitting too fast, in case there's some error
-     * and we're trying over and over and ;
+     * and we're trying over and over 
      */
     function submitTooFast(){
         var diff = new Date() - new Date(localStorage.loginAttempt);
@@ -280,6 +280,18 @@
         let button = await waitFor(()=>myframe.document.getElementsByClassName('button_normal')[0])
         button.click();
         button.click();
+    }
+
+
+                                                                redirect("https://www.uber.com/es/ec/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
+/** UBER **/                                                    redirect("https://www.uber.com/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
+    if( url                                                     .match("https://auth.uber.com/login/") )  {
+        /*      field doesnt recognize value when clicked. Neither automated or manually.
+        let user_field = await waitFor(()=>gi('useridInput'));
+        await sleep(5000)
+        user_field.value = getStorageValue('email');
+        gc("btn")[0].click();
+        */
     }
 
 
