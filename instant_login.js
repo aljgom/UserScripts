@@ -9,11 +9,11 @@
 // @match      http://*/*
 // @match      https://*/*
 // @grant      window.close
+// @grant      GM_setValue
+// @grant      GM_getValue
 // ==/UserScript==
 
 (async ()=>{
-
-    // gi and gc are defined in this local scope.
     function gi(id){ return document.getElementById(id); }
     function gc(cl){ return document.getElementsByClassName(cl); }
     let url = document.location.toString();
@@ -33,7 +33,7 @@
     }
 
     /**
-     * Wait until 'field' has a value, then click 'submitEl'
+     * Wait until 'field' has a value, then click 'submitEl'  #todo, change it to promise, or use waitFor
      */
     function loginWhenFieldSet(field, submitEl){
         log('instant login', field,submitEl)
@@ -50,7 +50,8 @@
 
     /**
      * Deprecated: it was used with the PasswordBox manager, which ended it's life
-     */    function setAccountChooseAlert(msg){                         // alert when account select shows up
+     */
+    function setAccountChooseAlert(msg){                         // alert when account select shows up
         if( !gc("PBTooltipFrame")[0] ){  setTimeout(setAccountChooseAlert,1000,...arguments);
                                        return;  }
         msg += '\n'.repeat(20);
@@ -58,28 +59,45 @@
         gc("PBTooltipFrame")[0].addEventListener('load', ()=>{ setTimeout(alert,100,msg); clearTimeout(alertTimeout); });
     }
 
-    /**
-     * Wait until query exists, then set a value for it
-     */
-    async function setValue(query,value){
-        let el = await waitFor(query,15*1000);
-        if(el) {
-            el.value = value;
-            return true;
-        }
-        return false;
-    }
 
     /**
      * redirect to 'other' url if wer're in 'check' url
      */
     function redirect(check,other){ if( url == check) setTimeout(()=> document.location= other,300); }
 
+    /**
+     * Store usernames and passwords if needed into Script storage.
+     * Keep in mind this is not really secure, so don't store important stuff
+     * As of now it will only prompt for storing if it doesn't exist.
+     * To update, do it manually in the Storage tab of the script
+     */
+    function getStorageValue(key){
+        let data = getData();
+        // if object doesn't have {key}, assign it
+        if(data[key] == undefined){
+             data[key] = prompt(`Instant Login Script: Enter *${key}* to store it`);
+             storeData(data);
+        }
+        return data[key]
+    }
+
+    function storeData(data){
+        GM_setValue(document.location.hostname, JSON.stringify(data))
+    }
+
+    await sleep(2000)
+    function getData(){
+        let data = GM_getValue(document.location.hostname);
+        if( data === undefined){
+            return {}
+        }
+        return JSON.parse(data)
+    }
+
+    function storeUsername(){}
+    function storePassword(){}
 
 
-    redirect('https://myactivity.google.com/myactivity','https://myactivity.google.com/item');
-
-    // login when field set:
 
 /*** BANK OF AMERICA **/
     if( url                                                     == "https://www.bankofamerica.com/"){
@@ -141,7 +159,6 @@
         loginWhenFieldSet( gi("pw-label"), gi("ib-login-button") );
     }
 
-/*** MYNETDIARY **/                                             redirect("http://www.mynetdiary.com/", "http://www.mynetdiary.com/daily.do");
 
                                                                 redirect("https://www.mint.com/",  "https://mint.intuit.com/bills.event");
 /*** MINT **/                                                   redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
@@ -149,19 +166,99 @@
         loginWhenFieldSet(await waitFor(()=>gi('ius-password')), gi("ius-sign-in-submit-btn") );        //  });
     }
 
+
+/*** MYNETDIARY **/                                             redirect("http://www.mynetdiary.com/", "http://www.mynetdiary.com/daily.do");
+
+
+                                                                redirect("https://www.paypal.com/","https://www.paypal.com/signin");
+                                                                redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
+/** PAYPAL **/                                                  redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
+        if( url                                                 .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
+            loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
+        }
+
+
+                                                                redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");
+/*** PENFED **/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
+    // username
+    if(url                                                      == "https://www.penfed.org/login/"){
+        let user_field = await waitFor(()=>gi("mlloginusernameinput"));
+        user_field.value = getStorageValue('username');
+        gi('login-user-ml-login').click();
+    }
+    // password
+    if(url                                                      .match("online.penfed.org/PenFedOnline/Forms/Security/LogonPassword.aspx")){
+        loginWhenFieldSet( await waitFor(()=>gi("ctl00_ctl00_MainContentPlaceHolder_cphSecurityMainContent_txtPassword")), gi("ctl00_ctl00_MainContentPlaceHolder_imgLogon") );
+    }
+
 /*** SAVVYMONEY **/                                             redirect("https://www.savvymoney.com/", "https://www.savvymoney.com/login");
     if(url                                                      .match("https://www.savvymoney.com/login")){
         loginWhenFieldSet(await waitFor(()=>gi("password-sign-in")), gi("login-btn") );
     }
 
-                                                                redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");
-/*** PENFED **/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
-    if(url                                                      == "https://www.penfed.org/login/"){
-        await setValue(()=>gi("mlloginusernameinput"), 'aljgom');
-        gi('login-user-ml-login').click()
+
+                                                                var loginPage = "https://digitalbanking.tcfbank.com/#login"
+                                                                redirect('https://tcfbank.com/', loginPage);
+/*** TCF ***/                                                   redirect('https://www.tcfbank.com/digital-banking-timeout',loginPage);
+    if(url                                                      .match('https://digitalbanking.tcfbank.com/#login')){
+        loginWhenFieldSet( await waitFor(()=> gi('challengePassword')) , gc('btn-submit')[0]);
     }
-    if(url                                                      .match("online.penfed.org/PenFedOnline/Forms/Security/LogonPassword.aspx")){
-        loginWhenFieldSet( gi("ctl00_ctl00_MainContentPlaceHolder_cphSecurityMainContent_txtPassword"), gi("ctl00_ctl00_MainContentPlaceHolder_imgLogon") );
+
+    if( url                                                     == "https://onlinebanking.tcfbank.com/fitcf/retail/logon/mfa/challenge"){
+        questions = setInterval(function(){
+            if( gc("sc_oc_RO_form_input ")[5] === undefined) return;
+            clearInterval(questions);
+            ques = gc("sc_oc_RO_form_input ")[4].innerHTML;
+            ans = gc("sc_oc_RO_form_input ")[5].children[0];
+            if( ques.match('middle') )              ans.value = getStorageValue('momMiddle');
+            else if( ques.match('grandmother') )    ans.value = getStorageValue('grandma');
+            else                                    ans.value = getStorage('city');
+            formbutton1.click();
+        },100);
+    }
+
+                                                                var loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
+                                                                redirect("https://uoficreditunion.org/",                                     loginPage);
+                                                                redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
+                                                                redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
+                                                                redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
+/***UIECU ***/
+    if( url                                                     == loginPage ){
+        await sleep(1000);
+        // reload on error
+        if(document.body.innerHTML.match('An Error Occurred While Processing Your Request') )
+            document.location.reload();
+        // submit username and submit pw, they use the same url, so run both waits asyncronously
+        (async function enter_username(){
+            let user_field = await waitFor(()=>gi("ctl00_PageContent_Login1_IdTextBox"));
+            user_field.value = getStorageValue('username');
+            ctl00_PageContent_Login1_IdSubmitButton.click();
+        })();
+        loginWhenFieldSet( await waitFor(()=>gi("ctl00_PageContent_Login1_PasswordTextBox")), gi("ctl00_PageContent_Login1_PasswordSubmitButton") );
+    }
+
+                                                                if( url.match("netteller.com/login2008/Views/Retail/MyNetTeller.aspx"  ) ){
+                                                                    ctl00_ctl26_primaryMenuInfolinkV2MenuItemLinkButton.click(); // click Visa Card
+                                                                }
+    if( url == 'https://www.netteller.com/login2008/Views/Retail/InfolinkV2.aspx'){
+        await sleep(5000);
+        window.close();   // close window left behind
+    }
+
+
+/*** TRENDNET ROUTER **/
+    if( url                                                     .match("http://192.168.10.1/login.asp") )  {
+        let user_field = await waitFor(()=>gi("UserName"));
+        user_field.value = getStorageValue('username');
+        gi("Passwd").value = getStorageValue('password');
+        Login_s.click();
+    }
+
+    if( url                                                     .match("http://192.168.10.1/home.html") )  {
+        gc("menuheader ")[0].click();
+        let button = await waitFor(()=>myframe.document.getElementsByClassName('button_normal')[0])
+        button.click();
+        button.click();
     }
 
 
@@ -177,69 +274,18 @@
 
 
 
-                                                                var loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
-                                                                redirect("https://uoficreditunion.org/",                                     loginPage);
-                                                                redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
-                                                                redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
-                                                                redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
-/***UIECU ***/
-    if( url                                                     == loginPage ){
-        await sleep(1000);
-        // reload on error
-        if(document.body.innerHTML.match('An Error Occurred While Processing Your Request') )
-            document.location.reload();
-
-        // submit username and submit pw
-        setValue(()=>gi("ctl00_PageContent_Login1_IdTextBox"), 'aljgom') // running async
-        .then(()=>ctl00_PageContent_Login1_IdSubmitButton.click());
-        loginWhenFieldSet( gi("ctl00_PageContent_Login1_PasswordTextBox"), gi("ctl00_PageContent_Login1_PasswordSubmitButton") );
-    }
-
-                                                                if( url.match("netteller.com/login2008/Views/Retail/MyNetTeller.aspx"  ) ){
-                                                                    ctl00_ctl26_primaryMenuInfolinkV2MenuItemLinkButton.click(); // click Visa Card
-                                                                }
-    if( url == 'https://www.netteller.com/login2008/Views/Retail/InfolinkV2.aspx'){
-        await sleep(5000);
-        window.close();   // close window left behind
-    }
 
 
 
 
 
-    // set value
-/** PAYPAL **/                                                  redirect("https://www.paypal.com/","https://www.paypal.com/signin");
-                                                                redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
-                                                                redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
-    if( url                                                     .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
-        loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
-    }
-
-
-// are these being used?
-    if(url == "https://home.personalcapital.com/page/login/app#/dashboard" ||
-       url == "https://home.personalcapital.com/page/login/goHome#/all-transactions" ||
-       url == "https://home.personalcapital.com/page/login/app")
-        document.location = 'https://home.personalcapital.com/page/login/app#/all-transactions';
 
 
 
 
 
-/*** TRENDNET ROUTER **/
-    if( url                                                     .match("http://192.168.10.1/login.asp") )  {
-        await setValue(()=>gi("UserName"),  "admin");
-        await setValue(()=>gi("Passwd"),  "password");
-        Login_s.click();
-    }
 
-    if( url                                                     .match("http://192.168.10.1/home.html") )  {
-        gc("menuheader ")[0].click();
-        waitFor("myframe.document.getElementsByClassName('button_normal')[0]",10*1000).then(function(el){
-            el.click();
-            el.click();
-        });
-    }
+
 
 
 })();
