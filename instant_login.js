@@ -20,7 +20,7 @@
 
     /**
      * Keep track if we're submitting too fast, in case there's some error
-     * and we're trying over and over 
+     * and we're trying over and over
      */
     function submitTooFast(){
         var diff = new Date() - new Date(localStorage.loginAttempt);
@@ -160,6 +160,25 @@
     }
 
 
+/** FREEDOMPOP **/                                              redirect("https://www.freedompop.com/", "https://www.freedompop.com/login.htm");
+    if( url                                                     == "https://www.freedompop.com/login.htm"  ||
+        url                                                     .match( "https://support.freedompop.com/app/utils/login_form" ) ){
+        var pw = await waitFor(()=>document.getElementsByName("signin-password-full")[0]);
+        var user = document.getElementsByName("signin-username-full")[0]
+        // pw.value = getStorageValue('password');
+        // user.value = getStorageValue('email');
+        //pw.onKeyPress = user.onkeypress = e => if(e.keyCode == 13) login.submit(); // they prevent Enter propagation, this line doesnt work
+
+    }
+    if(url.match('my.freedompop')){ setInterval(()=>{
+        if(gc('account-list-dropdown')[1]) gc('account-list-dropdown')[1].parentElement.style.maxHeight = 'initial';
+        var prev;
+        url = document.location.toString();
+        if(url != prev) redirect("https://my.freedompop.com/login", "https://www.freedompop.com/login.htm");
+        prev = prev ? prev : url;
+    },200);}
+
+
                                                                 redirect("https://www.mint.com/",  "https://mint.intuit.com/bills.event");
 /*** MINT **/                                                   redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
     if( url                                                     .match("accounts.intuit.com/index.html")){
@@ -178,6 +197,11 @@
     }
 
                                                                 redirect("https://play.google.com/store/apps/details?id=com.personalcapital.pcapandroid",  "https://home.personalcapital.com/page/login/goHome");  // from google play app page
+                                                                // redirect to transactions tab
+                                                                if(url == "https://home.personalcapital.com/page/login/app#/dashboard" ||
+                                                                   url == "https://home.personalcapital.com/page/login/goHome#/all-transactions" ||
+                                                                   url == "https://home.personalcapital.com/page/login/app")
+                                                                    document.location = 'https://home.personalcapital.com/page/login/app#/all-transactions';
                                                                 setTimeout(()=>{
 /** PERSONAL CAPITAL **/                                            redirect( "https://www.personalcapital.com/" , "https://home.personalcapital.com/page/login/goHome" );  },2000);
     if( url                                                     .match("https://home.personalcapital.com/page/login/")){
@@ -192,11 +216,6 @@
         // password
         loginWhenFieldSet( await waitFor(()=>document.getElementsByName("passwd")[0]), gc("btn btn-primary")[1]);
     }
-                                                                // redirect to transactions tab
-                                                                if(url == "https://home.personalcapital.com/page/login/app#/dashboard" ||
-                                                                   url == "https://home.personalcapital.com/page/login/goHome#/all-transactions" ||
-                                                                   url == "https://home.personalcapital.com/page/login/app")
-                                                                    document.location = 'https://home.personalcapital.com/page/login/app#/all-transactions';
 
 
                                                                 redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");
