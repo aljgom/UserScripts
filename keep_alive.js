@@ -84,4 +84,4 @@ setInterval(function(){
     button = gc("primary-button larger-margin-bottom")[0];
     if(button !== undefined) button.click();
 
-},55*1000);
+},25*1000);
