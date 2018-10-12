@@ -16,6 +16,7 @@
 (async ()=>{
     function gi(id){ return document.getElementById(id); }
     function gc(cl){ return document.getElementsByClassName(cl); }
+    let sleep = ms=>new Promise(resolve=>setTimeout(resolve,ms));
     let url = document.location.toString();
 
     /**
@@ -36,7 +37,6 @@
      * Wait until 'field' has a value, then click 'submitEl'  #todo, change it to promise, or use waitFor
      */
     function loginWhenFieldSet(field, submitEl){
-        log('instant login', field,submitEl)
         if( !field || !field.value) {
             setTimeout(loginWhenFieldSet,1000,...arguments); return;  }
         if(field.prev != field.value){                          // wait one iteration to see if field is changing
@@ -55,7 +55,7 @@
         if( !gc("PBTooltipFrame")[0] ){  setTimeout(setAccountChooseAlert,1000,...arguments);
                                        return;  }
         msg += '\n'.repeat(20);
-        alertTimeout = setTimeout(alert,10000,msg);                            // in case popup was already loaded when adding event listener
+        let alertTimeout = setTimeout(alert,10000,msg);                            // in case popup was already loaded when adding event listener
         gc("PBTooltipFrame")[0].addEventListener('load', ()=>{ setTimeout(alert,100,msg); clearTimeout(alertTimeout); });
     }
 
@@ -245,14 +245,14 @@
     }
 
     if( url                                                     == "https://onlinebanking.tcfbank.com/fitcf/retail/logon/mfa/challenge"){
-        questions = setInterval(function(){
+        let  questions = setInterval(function(){
             if( gc("sc_oc_RO_form_input ")[5] === undefined) return;
             clearInterval(questions);
-            ques = gc("sc_oc_RO_form_input ")[4].innerHTML;
-            ans = gc("sc_oc_RO_form_input ")[5].children[0];
+            let ques = gc("sc_oc_RO_form_input ")[4].innerHTML;
+            let ans = gc("sc_oc_RO_form_input ")[5].children[0];
             if( ques.match('middle') )              ans.value = getStorageValue('momMiddle');
             else if( ques.match('grandmother') )    ans.value = getStorageValue('grandma');
-            else                                    ans.value = getStorage('city');
+            else                                    ans.value = getStorageValue('city');
             formbutton1.click();
         },100);
     }
@@ -261,7 +261,7 @@
                                                                 redirect("https://uoficreditunion.org/",                                     loginPage);
                                                                 redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
-                                                                redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
+                                                                redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
 /***UIECU ***/
     if( url                                                     == loginPage ){
         await sleep(1000);
