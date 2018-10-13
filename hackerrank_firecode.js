@@ -16,6 +16,7 @@
 (async function() {  ///
     'use strict';
     let url = document.location.toString();
+    let sleep = ms => new Promise(resolve=>setTimeout(resolve,ms));
 
     /* HACKERRANK */
     if(url.match('hackerrank')){
@@ -35,7 +36,7 @@
         output.parentElement.insertBefore(prev, output.nextSibling); // insert cointainer after output
 
         // Clone output when submit botton is pressed, to keep the previous output visible
-        function cloneOutput(){
+        let cloneOutput = function(){
             resetOutputPosition();
             prev.innerHTML = '';
             prev.appendChild( output.cloneNode(true) );
@@ -44,7 +45,7 @@
         run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
 
         // Make output float when run_code is clicked, put it back in original position if output clicked
-        function floatOutput(){
+        let floatOutput = function(){
             Object.assign(output.style,{
                 position: 'fixed',
                 top: '100%',
@@ -56,7 +57,7 @@
             output_floating = true;
         }
         // minimizes output (still floating)
-        function unfloatOutput(){
+        let minimizeOutput = function(){
             Object.assign(output.style,{
                 // position: 'relative',
                 transform: 'translateY(-10%)',
@@ -65,7 +66,7 @@
             output_floating = false;
         }
         // return output to original position before cloning
-        function resetOutputPosition(){
+        let resetOutputPosition = function(){
             Object.assign(output.style,{
                 position: 'relative',
                 transform: '',
@@ -73,19 +74,31 @@
                 zIndex: 1
             });
         }
-        function toggleFloat(){
-            if(output_floating) unfloatOutput();
+        let toggleFloat = function(){
+            if(output_floating) minimizeOutput();
             else                floatOutput();
         }
 
         var output_floating = false;
-        run_code.addEventListener('click', floatOutput);
-        run_code.addEventListener('click', ()=>window.scrollTo(0,window.scrollY - 900));
-        output.addEventListener('click', toggleFloat);
+        run_code.addEventListener('click', async ()=>{          // float output and prevent scrolling behavior triggered when running code
+            floatOutput();
+            // Disable Scrolling
+            // scrolling is done by using jQuery animate, we'll disable it for a second
+            var temp = $.prototype.animate;
+            if($.prototype.animate.name == 'temp'){             // don't do it if it's already waiting, it would replace the function permanently
+                //console.log('already disabling scrolling')
+            }
+            else{
+                $.prototype.animate = function temp(){};
+                await sleep(1000);
+                $.prototype.animate = temp;
+            }
+        });
+        output.addEventListener('click', toggleFloat);      // float and minimize when clicking the output
 
         // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
-        document.addEventListener('keydown', function fkey(e){
-            if (e.keyCode == 116) {  //f5
+        document.addEventListener('keydown', function(e){
+            if (e.keyCode == 116) {             //f5
                 e.returnValue = false;
                 cloneOutput();
                 run_code.click();
@@ -112,4 +125,4 @@
 
     }
 
-})();  // highlight bc of async
+})();
