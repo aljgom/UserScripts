@@ -218,7 +218,7 @@
     }
 
 
-                                                                redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");
+                                                                redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");        // timed out page
 /*** PENFED **/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
     // username
     if(url                                                      == "https://www.penfed.org/login/"){
