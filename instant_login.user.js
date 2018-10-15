@@ -85,7 +85,7 @@
         GM_setValue(document.location.hostname, JSON.stringify(data))
     }
 
-    
+
     function getData(){
         let data = GM_getValue(document.location.hostname);
         if( data === undefined){
@@ -258,11 +258,11 @@
     }
 
                                                                 var loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
-                                                                redirect("https://uoficreditunion.org/",                                     loginPage);
                                                                 redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
-                                                                redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
-/***UIECU ***/
+                                                                redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
+                                                                redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page (there's 2)
+/***UIECU ***/                                                  redirect("https://uoficreditunion.org/",                                     loginPage);
     if( url                                                     == loginPage ){
         await sleep(1000);
         // reload on error
