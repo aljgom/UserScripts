@@ -7,8 +7,7 @@
 // @match        https://www.53.com/fifththird/html/session-timeout-warning-update.html
 // @match        https://www.53.com/fifththird/html/session-timeout-warning.html
 // @match        https://*.chase.com/*
-// @match        https://www.discovercard.com/*
-// @match        https://card.discover.com/*
+// @match        https://*.discover.com/*
 // @match        https://online.americanexpress.com/*
 // @match        https://creditwise.capitalone.com/*
 // @match        https://my.lendingtree.com/*
@@ -26,7 +25,6 @@
 /* jshint -W097 */
 
 'use strict';
-console.log('keeping alive');
 
 setInterval(function(){
     var w = unsafeWindow;
