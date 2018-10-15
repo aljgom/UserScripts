@@ -85,7 +85,7 @@
         GM_setValue(document.location.hostname, JSON.stringify(data))
     }
 
-    await sleep(2000)
+    
     function getData(){
         let data = GM_getValue(document.location.hostname);
         if( data === undefined){
