@@ -12,6 +12,9 @@
 (function() {
     'use strict';
 
+    var debug = ()=>{};
+    //debug = console.log.bind(console)
+
     setInterval(()=>{
         if(document.querySelectorAll('paper-dialog')[0] &&
             document.querySelectorAll('paper-dialog .line-text')[0].innerText.match(/Video angehalten|Video stopped/) &&
@@ -21,4 +24,24 @@
         }
     },5*1000);
 
+
+
+    // click next button if video ends and next video doesn't start playing automatically.
+    // only when the window is not focused, so it doens't leave the video the page is being looked at
+    setInterval(async ()=>{
+        var video = document.querySelectorAll('video')[0];
+        await sleep(2000);
+        debug('duration ', video.duration);
+        debug('current Time ', video.currentTime);
+        debug('duration == currentTime', video.duration == video.currentTime)
+        debug('document not focused', !document.hasFocus())
+        if(!document.hasFocus() && video.duration == video.currentTime){
+            await sleep(10*1000);
+            if(!document.hasFocus() && video.duration == video.currentTime){   // if 10 seconds later it's still paused
+                console.log('Youtube Continuous Play: click next');
+                document.getElementsByClassName('ytp-next-button ')[0].click()
+            }
+        }
+        else debug ("didn't click")
+    },10*1000)
 })();
