@@ -86,12 +86,12 @@
     }
     setInterval(()=>{   // keep repeating to read when video changes
         if(!unsafeWindow.buttons[0] || !unsafeWindow.buttons[0].children || !unsafeWindow.buttons[0].children[0]) {
-            log('reference button not found');
+            log('Adding buttons: Waiting for reference button');
             return;
         }
         if(buttons[0].children.length>5) return;
         addButtons();
-    },1000);
+    }, 2000);
 
 
 
@@ -458,26 +458,3 @@ var speedControl = setInterval(function(){
 
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
