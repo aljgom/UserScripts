@@ -316,6 +316,7 @@
 
 /*** WALLETHUB **/                                              redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
     if(url                                                      .match("https://wallethub.com/join/login")){
+        console.log("InstantLogin: can't get it to click the submit button")
         // only works when right clicking submit button before this code. (?)
         loginWhenFieldSet( await waitFor(()=> document.querySelectorAll('[name=pw]')[0]), document.querySelectorAll('button>span')[0] );
         //await waitFor(()=> document.querySelectorAll('[name=pw]')[0]);
