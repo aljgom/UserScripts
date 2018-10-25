@@ -2,7 +2,7 @@
 // @name       All Pages
 // @namespace  aljgom
 // @version    0.1
-// @description  added global functions/variables
+// @description  adds global functions/variables
 // @match      http://*/*
 // @match      https://*/*
 // @grant      GM_setValue
