@@ -81,3 +81,12 @@ async function waitFor(test, timeout_ms=20*2000){             // args:("$('#el_i
     });
 }
 addFunc(waitFor);
+
+
+// there is also a flag from tampermonkey that would let you detect incongito
+var isIncognito = new Promise((resolve, reject)=>{
+    var fs = window.RequestFileSystem || window.webkitRequestFileSystem;
+    if (!fs) reject('Check incognito failed');
+    else fs(window.TEMPORARY, 100, ()=>resolve(false), ()=>resolve(true));
+});
+unsafeWindow.isIncognito = isIncognito;
