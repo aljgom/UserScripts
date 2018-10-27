@@ -2,7 +2,7 @@
 // @name       All Pages
 // @namespace  aljgom
 // @version    0.1
-// @description  adds global functions/variables
+// @description  adds global functions/variables, other scripts depend on these
 // @match      http://*/*
 // @match      https://*/*
 // @grant      GM_setValue
@@ -36,8 +36,52 @@ Array.prototype.sortBy = function(key_func, reverse=false){
      }
  }
 
+
+
+ /* Returns a promise to sleep, can be used with await
+  */
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms));    }
 addFunc(sleep);
+
+ /*
+  Runs fileChangeHandler if the modification date changes for the specified file located at url
+  returns the interval number, so we can clear the monitoring using clearInterval
+  */
+ function monitorFileChange(url, fileChangeHandler){
+     /* Returns a promise of the response of the request*/
+     var requestHead = url=> new Promise((resolve,reject)=>{
+         GM_xmlhttpRequest({
+           method: "HEAD",
+           url: url,
+           onload: resolve
+         })
+     })
+
+     /* Checks every second if the modification date of the file requested changes
+      * If it does, it runs fileChangeHandler
+      */
+ 	var inter = setInterval(async function f(){
+         var response = await requestHead(url);
+         var modDate = response.responseHeaders.match(/last\-modified: (.*)/)[1];
+ 		if(f.prev != undefined && modDate != f.prev) fileChangeHandler();
+ 		f.prev = modDate;
+     },1000);
+ 	return inter;
+ }
+ addFunc(monitorFileChange);
+
+/*
+Usage:
+
+python -m http.server
+
+clearInterval(window.inter);
+inter = monitorFileChange('http://localhost:8000/file',
+    function fileChangeHandler(){
+		log('file changed')
+	})
+
+*/
 
 
 function gi(id){ return document.getElementById(id); }
