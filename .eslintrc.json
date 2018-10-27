@@ -20,6 +20,9 @@
         "gi": true,
         "unsafeWindow": true,
         "$":true,
-        "testElement": true
+        "testElement": true,
+        "sleep": true,
+        "log": true,
+        "arguments": true
     }
 }
