@@ -58,10 +58,10 @@
                )) return;                                                   // only run it in the 'problem' tab
 
             if(url.match('challenges')){                                    // new layout, contests still have old
-                // Change size of output
+                // Output size is too small, change it to window size
                 setInterval(()=>{
                     document.getElementsByClassName('compile-output-message').forEach((e)=>{
-                        e.style.maxHeight = 'initial'
+                        e.style.maxHeight = '50vh'
                     })
                 },1000)
             }
@@ -82,8 +82,6 @@
                 prev.innerHTML = '';
                 prev.appendChild( output.cloneNode(true) );
             }
-            var run_code = await waitFor(()=> gc('bb-compile')[0]);
-            run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
 
             // Make output float when run_code is clicked, put it back in original position if output clicked
             let floatOutput = function(){
@@ -91,9 +89,11 @@
                     position: 'fixed',
                     top: '100%',
                     transform: 'translateY(-100%)',
-                    left: 0,
+                    right: 0,
                     zIndex: 10,
-                    width: '30%'
+                    width: '30%',
+                    maxHeight: '100%',
+                    overflow: 'scroll'
                 });
                 output_floating = true;
             }
@@ -120,9 +120,7 @@
                 else                floatOutput();
             }
 
-            var output_floating = false;
-            run_code.addEventListener('click', async ()=>{          // float output and prevent scrolling behavior triggered when running code
-                floatOutput();
+            let dissable_autoScroll = async function(){ // float output and prevent scrolling behavior triggered when running code
                 // Disable Scrolling
                 // scrolling is done by using jQuery animate, we'll disable it for a second
                 var temp = $.prototype.animate;
@@ -134,13 +132,24 @@
                     await sleep(1000);
                     $.prototype.animate = temp;
                 }
+            }
+
+            var run_code = await waitFor(()=> gc('bb-compile')[0]);
+            run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
+            var output_floating = false;
+            $.prototype.animate = ((f)=>function(){log('animating'); f.call(this,...arguments);})($.prototype.animate)
+            run_code.addEventListener('click', async ()=>{
+                floatOutput();
             });
+
+            run_code.addEventListener('mousedown', dissable_autoScroll);
             output.addEventListener('click', toggleFloat);      // float and minimize when clicking the output
 
             // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
             document.addEventListener('keydown', function(e){
                 if (e.keyCode == 116) {             //f5
                     e.returnValue = false;
+                    dissable_autoScroll();
                     cloneOutput();
                     run_code.click();
                 }
