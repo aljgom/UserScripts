@@ -42,9 +42,11 @@ setInterval(function(){
 
     // Capital One
     if( w.timeOutContinue )  w.timeOutContinue.click();
-    if (gc('progressive')[0] && gc('progressive')[0].innerHTML == "Wait, I'm still here!" ? gc('progressive')[0] : false){
-        gc('progressive')[0].click();
-    }
+    gc('progressive').forEach(e=>{
+        if(e.innerHTML == "Wait, I'm still here!"){
+            e.click();
+        }
+    })
 
     // Chase
     if( w.btnContinue ) w.btnContinue.click();    // Chase homepage
