@@ -112,7 +112,7 @@
                                                                 redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
 
 /*** CHASE **/                                                //  redirect("https://secure07a.chase.com/web/auth/dashboard#/dashboard/index/index","https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
-    if( url                                                     == "https://www.chase.com/" || url == "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline"){
+    if( url                                                     .match("https://secure07a.chase.com/web/auth/")){
         setAccountChooseAlert('');
         loginWhenFieldSet( await waitFor(()=>gi('password-input-field')), gi('signin-button') );
     }
