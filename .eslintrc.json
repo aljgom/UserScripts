@@ -23,6 +23,7 @@
         "testElement": true,
         "sleep": true,
         "log": true,
-        "arguments": true
+        "arguments": true,
+        "GM_xmlhttpRequest": true
     }
 }
