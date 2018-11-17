@@ -1,7 +1,6 @@
 // ==UserScript==
 // @name       All Pages
 // @namespace  aljgom
-// @version    0.1
 // @description  adds global functions/variables, other scripts depend on these
 // @match      http://*/*
 // @match      https://*/*
@@ -20,7 +19,7 @@ var url = document.location.toString();
 HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
 
 // Add sorting function to be able to sort using a key function
-if(!url.match(".google.com")){
+if(!url.match(".google.com")){      // breaks google docs, probably other google apps too
     Array.prototype.sortBy = function(key_func, reverse=false){
           return this.sort( (a, b) => ( key_func(b) - key_func(a) ) * (reverse ? 1 : -1) )
      }
