@@ -20,8 +20,10 @@ var url = document.location.toString();
 HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
 
 // Add sorting function to be able to sort using a key function
-Array.prototype.sortBy = function(key_func, reverse=false){
-      return this.sort( (a, b) => ( key_func(b) - key_func(a) ) * (reverse ? 1 : -1) )
+if(!url.match(".google.com")){
+    Array.prototype.sortBy = function(key_func, reverse=false){
+          return this.sort( (a, b) => ( key_func(b) - key_func(a) ) * (reverse ? 1 : -1) )
+     }
  }
 
 /* Adds functions to the window object */
