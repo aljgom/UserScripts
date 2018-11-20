@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Keep Alive
+// @name         Keep Session Alive
 // @namespace    aljgom
 // @version      0.1
 // @description  Prevents session ending
@@ -15,6 +15,7 @@
 // @match        https://online.penfed.org/PenFedOnline/*
 // @match        https://www.quizzle.com/*
 // @match        https://tcfbank.com/*
+// @match        https://digitalbanking.tcfbank.com/*
 // @match        https://secure.creditsesame.com/*
 // @match        https://services1.capitalone.com/*
 // @match        https://services2.capitalone.com/*
@@ -63,6 +64,7 @@ setInterval(function(){
 
     // TCF
     if( w.Ok_Button ) { w.Ok_Button.click();   }
+    if( gc("btn-send-ping")[0] ) gc("btn-send-ping")[0]     // digitalbanking.tcf.com
 
 
   //class
