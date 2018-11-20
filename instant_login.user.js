@@ -112,7 +112,7 @@
                                                                 redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
 
 /*** CHASE **/                                                //  redirect("https://secure07a.chase.com/web/auth/dashboard#/dashboard/index/index","https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
-    if( url                                                     .match("https://secure07a.chase.com/web/auth/")){
+    if( url                                                     == "https://www.chase.com/" || url == "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline"){
         setAccountChooseAlert('');
         loginWhenFieldSet( await waitFor(()=>gi('password-input-field')), gi('signin-button') );
     }
@@ -239,6 +239,7 @@
 
                                                                 var loginPage = "https://digitalbanking.tcfbank.com/#login"
                                                                 redirect('https://tcfbank.com/', loginPage);
+                                                                redirect('https://www.tcfbank.com/digital-banking-session-ended', loginPage);
 /*** TCF ***/                                                   redirect('https://www.tcfbank.com/digital-banking-timeout',loginPage);
     if(url                                                      .match('https://digitalbanking.tcfbank.com/#login')){
         loginWhenFieldSet( await waitFor(()=> gi('challengePassword')) , gc('btn-submit')[0]);
