@@ -25,7 +25,7 @@
         HTMLCollection.prototype.forEach = Array.prototype.forEach;
         document.getElementsByClassName('uz1rMe').forEach(el=>{
             if(el.children[2] && el.children[2].children[0]){
-                if(el.children[2].children[0].innerText == "Keep"){
+                if(["Keep", "Notizen"].indexOf(el.children[2].children[0].innerText) >= 0){     // see if the name matches the list (Notizen = german Keep)
                    keep = el.children[5].children[0].children[0];
                 }
             }
