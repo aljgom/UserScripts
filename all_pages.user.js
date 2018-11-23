@@ -39,6 +39,29 @@ function addFunc(f,force){
 
 
 
+
+function gi(id){ return document.getElementById(id); }
+function gc(cl){ return document.getElementsByClassName(cl); }
+if( !document.location.toString().match("google.com") ){   // breaks google calendar, docs
+    addFunc(gi);
+    addFunc(gc);
+}
+
+// usage: log({___:10},..);
+function log(){                // log = console.log.bind(console)
+    var indent = arguments[0] && arguments[0].___;
+    if(indent) console.log( Array(indent).join(' ')+arguments[1], ...(Array(...arguments)).splice(2) ); // concatenates first arg in case it's using css formatting
+    else    console.log(...arguments);
+} addFunc( log );
+
+function log_(){
+    log({___:60},...arguments );
+}  addFunc( log_ );
+
+log___ = log_;
+
+
+
 /* Returns a promise to sleep, can be used with await
  */
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms));    }
@@ -85,25 +108,6 @@ inter = monitorFileChange('http://localhost:8000/file',
 */
 
 
-function gi(id){ return document.getElementById(id); }
-function gc(cl){ return document.getElementsByClassName(cl); }
-if( !document.location.toString().match("google.com") ){   // breaks google calendar, docs
-    addFunc(gi);
-    addFunc(gc);
-}
-
-// usage: log({___:10},..);
-function log(){                // log = console.log.bind(console)
-    var indent = arguments[0] && arguments[0].___;
-    if(indent) console.log( Array(indent).join(' ')+arguments[1], ...(Array(...arguments)).splice(2) ); // concatenates first arg in case it's using css formatting
-    else    console.log(...arguments);
-} addFunc( log );
-
-function log_(){
-    log({___:60},...arguments );
-}  addFunc( log_ );
-
-log___ = log_;
 
 /* Waits for test to return a truthy value
  */
