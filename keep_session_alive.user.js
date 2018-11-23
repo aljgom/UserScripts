@@ -64,7 +64,7 @@ setInterval(function(){
 
     // TCF
     if( w.Ok_Button ) { w.Ok_Button.click();   }
-    if( gc("btn-send-ping")[0] ) gc("btn-send-ping")[0]     // digitalbanking.tcf.com
+    if( gc("btn-send-ping")[0] ) gc("btn-send-ping")[0].click()     // digitalbanking.tcf.com
 
 
   //class
