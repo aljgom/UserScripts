@@ -13,7 +13,14 @@
     /*** CHANGE TITLE OF TAB **/
 
     setInterval(()=>{
-        if(document.location.href.match('#home')) return;           // Leave the homepage alone
+        if(document.location.href.match(/#(home)/)){
+            document.title = "Google Keep";
+            return;
+        }
+        if(document.location.href.match(/#label/)){
+            document.title = document.getElementsByClassName('gb_Xc')[0].innerText;
+            return;
+        }
         var titles = document.querySelectorAll('[aria-label=Title]')
         if(titles.length == 0) titles = document.querySelectorAll('[aria-label=Titel]') // Try it in German
         document.title = titles[titles.length-1].innerHTML          // Change the tab title to the name of the current List/Note
@@ -32,7 +39,7 @@
                     unchecked.splice(0,1)								// remove first result, it's not the correct match
                     i = 0;
                 }
-                if(unchecked.length == 0) return
+                if(unchecked.length == 0) yield
                 yield unchecked[i]
                 i = (i+1) % unchecked.length
             }
@@ -46,13 +53,18 @@
             var toolbar = container.parentElement.querySelectorAll('[role=toolbar]')[0];  // bottom toolbar
             if(toolbar.buttonInserted) return;
             toolbar.buttonInserted = true;
-            uncheckedIter = nextUnchecked();        // reset unchecked list
+            uncheckedIter = nextUnchecked();            // reset unchecked list
 
             var button = document.createElement('div')
             toolbar.appendChild(button)
-            button.innerHTML = "next"
+            Object.assign(button.style,{
+                userSelect: 'none',                     // disable text selection
+                color:      '#202124',
+                paddingTop: '.35em'
+            });
+            button.innerHTML = "Next"
             button.className = "Q0hgme-LgbsSe" 			// copy class from sibling
-            button.style.userSelect = 'none';           // disable text selection
+            button.id        = "next_button"
             button.onclick = async function scrollToNextUnchecked(){
                 var next = uncheckedIter.next().value
                 next.scrollIntoView();
@@ -63,7 +75,6 @@
             }
         }
         setInterval(insertButton,2000)
-                    //a = nextUnchecked()
     })();
 
 })();
