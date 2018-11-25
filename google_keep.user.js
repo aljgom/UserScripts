@@ -9,15 +9,19 @@
 // ==/UserScript==
 
 (async function(){
-
     /*** CHANGE TITLE OF TAB **/
-
+    var url = document.location.href;
     setInterval(()=>{
-        if(document.location.href.match(/#(home)/)){
-            document.title = "Google Keep";
+        url = document.location.href;
+        if(!url.match("#") || url.match(/#(home)/)){
+            document.title = document.getElementsByClassName('gb_ue gb_pe')[0].innerHTML
             return;
         }
-        if(document.location.href.match(/#label/)){
+        if(url.match(/#search/)){
+            document.title = decodeURIComponent(decodeURIComponent(decodeURIComponent(location.hash.substr(1)))).replace('/text','')   // need to decode it a few consecutive times
+            return;
+        }
+        if(!url.match(/#(NOTE|LIST)/)){             // no note/list selected, use name of manu
             document.title = document.getElementsByClassName('gb_Xc')[0].innerText;
             return;
         }
