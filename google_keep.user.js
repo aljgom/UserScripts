@@ -43,9 +43,12 @@
                     unchecked.splice(0,1)								// remove first result, it's not the correct match
                     i = 0;
                 }
-                if(unchecked.length == 0) yield
-                yield unchecked[i]
-                i = (i+1) % unchecked.length
+                if(unchecked.length == 0)
+                    yield;
+                else{
+                    yield unchecked[i]
+                    i = (i+1) % unchecked.length
+                }
             }
         }
         var uncheckedIter;
@@ -71,10 +74,11 @@
             button.id        = "next_button"
             button.onclick = async function scrollToNextUnchecked(){
                 var next = uncheckedIter.next().value
+                if(!next) return;                       // no unchecked boxes
                 next.scrollIntoView();
                 container.scrollTo(0,container.scrollTop - 75)
                 next.style.background = '#e0e0e0'		// flash it's background
-                await sleep(200)
+                await sleep(300)
                 next.style.background = ''
             }
         }
