@@ -22,7 +22,7 @@
             return;
         }
         if(!url.match(/#(NOTE|LIST)/)){             // no note/list selected, use name of manu
-            document.title = document.getElementsByClassName('gb_Xc')[0].innerText;
+            document.title = document.getElementsByClassName('gk6SMd')[0].innerText;
             return;
         }
         var titles = document.querySelectorAll('[aria-label=Title]')
