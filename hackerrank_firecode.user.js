@@ -53,7 +53,7 @@
         });
 
         let runHackerrank = async function(){
-            if( !( url.match(/challenge|contest/) //&&
+            if( !( url.match(/challenge|contest|tests/) //&&
                    //url.match('problem')                                   // problem tab could also not have 'problem' specified, and it could be blank, ignore for now.
                )) return;                                                   // only run it in the 'problem' tab
 
@@ -67,7 +67,14 @@
             }
 
             // Add area where cloned output will be placed
-            var output = await waitFor(()=>gc('challenge-response fs-container')[0]);
+            var output
+			if(url.match('tests')){
+				output = await waitFor(()=>gi('runstatus'));
+                var question = document.querySelector('[aria-label="Question Content"]').innerText;
+                console.log(question)
+            }else{
+                output = await waitFor(()=>gc('challenge-response fs-container')[0]);
+            }
 
             if(output.modified == true) return;                             // since we're running the code every time the url changes, make sure we haven't modified already
             output.modified = true
@@ -92,7 +99,7 @@
                     right: 0,
                     zIndex: 10,
                     width: '30%',
-                    maxHeight: '100%',
+                    maxHeight: '95%',
                     overflow: 'scroll'
                 });
                 output_floating = true;
@@ -123,6 +130,7 @@
             let dissable_autoScroll = async function(){ // float output and prevent scrolling behavior triggered when running code
                 // Disable Scrolling
                 // scrolling is done by using jQuery animate, we'll disable it for a second
+                if(url.match('tests')) return                       // don't disable if in tests layout
                 var temp = $.prototype.animate;
                 if($.prototype.animate.name == 'temp'){             // don't do it if it's already waiting, it would replace the function permanently
                     //console.log('already disabling scrolling')
@@ -134,10 +142,18 @@
                 }
             }
 
-            var run_code = await waitFor(()=> gc('bb-compile')[0]);
+            // select "Run Code" button
+            var run_code;
+            if(url.match('tests|challenges')){
+                run_code = await waitFor(()=>gc('msR')[0]);
+            }
+            else{
+                run_code = await waitFor(()=> gc('bb-compile')[0]);
+            }
+
             run_code.addEventListener('mousedown',cloneOutput);             // mousedown  instead of click so it fires before submission
             var output_floating = false;
-            $.prototype.animate = ((f)=>function(){log('animating'); f.call(this,...arguments);})($.prototype.animate)
+            // $.prototype.animate = ((f)=>function(){log('animating'); f.call(this,...arguments);})($.prototype.animate)  // add a logged message to the function for testing
             run_code.addEventListener('click', async ()=>{
                 floatOutput();
             });
@@ -158,6 +174,8 @@
         runHackerrank();
     }
 
+
+
     /* FIRECODE */
     if(url.match('firecode')){
         // Keybord listener to click the 'submit code' button if F5 is pressed, and prevent from reloading
@@ -165,13 +183,13 @@
         document.addEventListener('keydown', async function fkey(e){
             if (e.keyCode == 116) {  //f5
                 e.returnValue = false;
-                btnRun.click();
+                window.btnRun.click();
 
                 var el = await waitFor(()=>gc("modal-backdrop")[0],20*1000);
                 if (el) el.style.display ='none';
 
-                await waitFor(()=>testModal.style.display == 'block',20*1000);
-                testModal.click();
+                await waitFor(()=> window.testModal.style.display == 'block',20*1000);
+                window.testModal.click();
             }
         });
 
