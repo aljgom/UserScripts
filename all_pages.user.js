@@ -18,11 +18,17 @@ var url = document.location.toString();
 // Add forEach to HTMLTableSectionElement, NodeList and HTMLCollection
 HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
 
+
+function gi(id){ return document.getElementById(id); }
+function gc(cl){ return document.getElementsByClassName(cl); }
+
+if(!url.match(/.google.com|.youtube.com/)){      // breaks google docs, probably other google apps too
 // Add sorting function to be able to sort using a key function
-if(!url.match(".google.com")){      // breaks google docs, probably other google apps too
     Array.prototype.sortBy = function(key_func, reverse=false){
           return this.sort( (a, b) => ( key_func(b) - key_func(a) ) * (reverse ? 1 : -1) )
      }
+     addFunc(gi);
+     addFunc(gc);
  }
 
 /* Adds functions to the window object */
@@ -39,13 +45,6 @@ function addFunc(f,force){
 
 
 
-
-function gi(id){ return document.getElementById(id); }
-function gc(cl){ return document.getElementsByClassName(cl); }
-if( !document.location.toString().match("google.com") ){   // breaks google calendar, docs
-    addFunc(gi);
-    addFunc(gc);
-}
 
 // usage: log({___:10},..);
 function log(){                // log = console.log.bind(console)
