@@ -72,7 +72,7 @@ addFunc(sleep);
  * Returns a promise of the response of the request
  */
 function monitorFileChange(url, fileChangeHandler){
-    var requestHead = url=> new Promise((resolve,reject)=>{
+    var requestHead = url=> new Promise(resolve=>{
         GM_xmlhttpRequest({
             method: "HEAD",
             url: url,
@@ -85,7 +85,7 @@ function monitorFileChange(url, fileChangeHandler){
      */
     var inter = setInterval(async function f(){
         var response = await requestHead(url);
-        var modDate = response.responseHeaders.match(/last\-modified: (.*)/)[1];
+        var modDate = response.responseHeaders.match(/last-modified: (.*)/)[1];
         if(f.prev != undefined && modDate != f.prev) fileChangeHandler();
             f.prev = modDate;
         },1000);
@@ -138,3 +138,15 @@ var isIncognito = new Promise((resolve, reject)=>{
     else fs(window.TEMPORARY, 100, ()=>resolve(false), ()=>resolve(true));
 });
 unsafeWindow.isIncognito = isIncognito;
+
+
+
+
+/* Each time it is called logs the time elapses since last time it was called
+ * lap is a name that will be logged when reached
+ * used to see how long blocks of code take to run (laps)
+ */
+function timer(lap){
+    if(lap) console.log(lap, 'in:', (performance.now()-timer.prev).toFixed(3) + 'ms');
+    timer.prev = performance.now();
+} addFunc(timer);
