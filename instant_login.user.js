@@ -261,14 +261,18 @@
                                                                 var loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
                                                                 redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
+                                                            //    redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::",  loginPage); // account home page, we'll redirect if error by looking for element instead
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
                                                                 redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page (there's 2)
 /***UIECU ***/                                                  redirect("https://uoficreditunion.org/",                                     loginPage);
     if( url                                                     == loginPage ){
         await sleep(1000);
         // reload on error
-        if(document.body.innerHTML.match('An Error Occurred While Processing Your Request') )
+        if(document.body.innerHTML.match('An Error Occurred While Processing Your Request'))
             document.location.reload();
+        if(gc('genericerror')[0]){
+            document.location = loginPage;
+         }
         // submit username and submit pw, they use the same url, so run both waits asyncronously
         (async function enter_username(){
             let user_field = await waitFor(()=>gi("ctl00_PageContent_Login1_IdTextBox"));
