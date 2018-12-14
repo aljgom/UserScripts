@@ -25,8 +25,14 @@ function gc(cl){ return document.getElementsByClassName(cl); }
 if(!url.match(/.google.com|.youtube.com/)){      // breaks google docs, probably other google apps too
 // Add sorting function to be able to sort using a key function
     Array.prototype.sortBy = function(key_func, reverse=false){
-          return this.sort( (a, b) => ( key_func(b) - key_func(a) ) * (reverse ? 1 : -1) )
-     }
+        return this.sort( (a, b) => {
+            var keyA = key_func(a),
+                keyB = key_func(b);
+            if(keyA < keyB) return reverse? 1: -1;
+            if(keyA > keyB) return reverse? -1: 1;
+            return 0;
+        });
+    }
      addFunc(gi);
      addFunc(gc);
  }
