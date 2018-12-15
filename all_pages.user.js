@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name       All Pages
 // @namespace  aljgom
+// @author     aljgom
 // @description  adds global functions/variables, other scripts depend on these
 // @match      http://*/*
 // @match      https://*/*
