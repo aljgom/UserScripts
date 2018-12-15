@@ -11,6 +11,7 @@
 // @grant      window.close
 // @grant      GM_setValue
 // @grant      GM_getValue
+// @grant      unsafeWindow
 // ==/UserScript==
 
 (async ()=>{
@@ -94,8 +95,6 @@
         return JSON.parse(data)
     }
 
-    function storeUsername(){}
-    function storePassword(){}
 
 
 
@@ -131,12 +130,12 @@
                                                                 redirect("https://secure.creditsesame.com/s/signup1v3", "https://secure.creditsesame.com/s/login"); // loggeed out page
 /*** CREDIT SESAME ***/                                         redirect("https://www.creditsesame.com/", "https://secure.creditsesame.com/s/login");
     if(url                                                      .match("https://secure.creditsesame.com/s/login") ){
-        loginWhenFieldSet( password, gi("loginButton") );
+        loginWhenFieldSet( unsafeWindow.password, gi("loginButton") );
     }
 
 /*** CREDITKARMA ***/                                           redirect("https://www.creditkarma.com/", "https://www.creditkarma.com/auth/logon");
     if(url                                                      .match("https://www.creditkarma.com/auth/logon") ){
-        loginWhenFieldSet( password, gi("Logon") );
+        loginWhenFieldSet( unsafeWindow.password, gi("Logon") );
     }
 
                                                                 var loginPage = 'https://portal.discover.com/customersvcs/universalLogin/ac_main'
@@ -165,8 +164,8 @@
         url                                                     .match( "https://support.freedompop.com/app/utils/login_form" ) ){
         var pw = await waitFor(()=>document.getElementsByName("signin-password-full")[0]);
         var user = document.getElementsByName("signin-username-full")[0]
-        // pw.value = getStorageValue('password');
-        // user.value = getStorageValue('email');
+        pw.value = getStorageValue('password');
+        user.value = getStorageValue('email');
         //pw.onKeyPress = user.onkeypress = e => if(e.keyCode == 13) login.submit(); // they prevent Enter propagation, this line doesnt work
 
     }
@@ -237,7 +236,7 @@
     }
 
 
-                                                                var loginPage = "https://digitalbanking.tcfbank.com/#login"
+                                                                loginPage = "https://digitalbanking.tcfbank.com/#login"
                                                                 redirect('https://tcfbank.com/', loginPage);
                                                                 redirect('https://www.tcfbank.com/digital-banking-session-ended', loginPage);
 /*** TCF ***/                                                   redirect('https://www.tcfbank.com/digital-banking-timeout',loginPage);
@@ -254,11 +253,11 @@
             if( ques.match('middle') )              ans.value = getStorageValue('momMiddle');
             else if( ques.match('grandmother') )    ans.value = getStorageValue('grandma');
             else                                    ans.value = getStorageValue('city');
-            formbutton1.click();
+            unsafeWindow.formbutton1.click();
         },100);
     }
 
-                                                                var loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
+                                                                loginPage = "https://www.netteller.com/login2008/Authentication/Views/Login.aspx"
                                                                 redirect("https://ap.pscu.com/AP/apresources/close.html",                    loginPage); // logged out page
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:1::::#", loginPage); // error page
                                                             //    redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::",  loginPage); // account home page, we'll redirect if error by looking for element instead
@@ -270,20 +269,21 @@
         // reload on error
         if(document.body.innerHTML.match('An Error Occurred While Processing Your Request'))
             document.location.reload();
-        if(gc('genericerror')[0]){
-            document.location = loginPage;
-         }
         // submit username and submit pw, they use the same url, so run both waits asyncronously
         (async function enter_username(){
             let user_field = await waitFor(()=>gi("ctl00_PageContent_Login1_IdTextBox"));
             user_field.value = getStorageValue('username');
-            ctl00_PageContent_Login1_IdSubmitButton.click();
+            unsafeWindow.ctl00_PageContent_Login1_IdSubmitButton.click();
         })();
         loginWhenFieldSet( await waitFor(()=>gi("ctl00_PageContent_Login1_PasswordTextBox")), gi("ctl00_PageContent_Login1_PasswordSubmitButton") );
     }
-
+    if( url                                                      == "https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::"){
+        if(gc('genericerror')[0]){
+            document.location = loginPage;
+         }
+     }
                                                                 if( url.match("netteller.com/login2008/Views/Retail/MyNetTeller.aspx"  ) ){
-                                                                    ctl00_ctl26_primaryMenuInfolinkV2MenuItemLinkButton.click(); // click Visa Card
+                                                                    unsafeWindow.ctl00_ctl26_primaryMenuInfolinkV2MenuItemLinkButton.click(); // click Visa Card
                                                                 }
     if( url == 'https://www.netteller.com/login2008/Views/Retail/InfolinkV2.aspx'){
         await sleep(5000);
@@ -296,12 +296,12 @@
         let user_field = await waitFor(()=>gi("UserName"));
         user_field.value = getStorageValue('username');
         gi("Passwd").value = getStorageValue('password');
-        Login_s.click();
+        unsafeWindow.Login_s.click();
     }
 
     if( url                                                     .match("http://192.168.10.1/home.html") )  {
         gc("menuheader ")[0].click();
-        let button = await waitFor(()=>myframe.document.getElementsByClassName('button_normal')[0])
+        let button = await waitFor(()=> unsafeWindow.myframe.document.getElementsByClassName('button_normal')[0])
         button.click();
         button.click();
     }
