@@ -157,3 +157,61 @@ function timer(lap){
     if(lap) console.log(lap, 'in:', (performance.now()-timer.prev).toFixed(3) + 'ms');
     timer.prev = performance.now();
 } addFunc(timer);
+
+
+
+
+/*** SHOW LAST ELEMENT CLICKED ****/
+/* addding functions showLastClicked and doneClicking
+ * will highlight the last element clicked, print a path to it,
+ * and save it to the global variable lastClicked
+ */
+var clicking = null;  // without var, it's assigned to global scope
+var lastClicked = {};
+function showLastClicked(){
+    clicking = true;   // global
+	var all = document.getElementsByTagName("*");
+	lastClicked.style = {};
+	lastClicked.oldborder = "";
+	function alertPath(el) {
+		var rightArrowParents = [],
+			elm,
+			entry;
+
+		for (elm = el.parentNode; elm; elm = elm.parentNode) {
+			entry = elm.tagName.toLowerCase();
+			if (entry === "html") {
+				break;
+			}
+			if (elm.className) {
+				entry += "." + elm.className.replace(/ /g, '.');
+			}
+			rightArrowParents.push(entry);
+		}
+		rightArrowParents.reverse();
+		console.log(rightArrowParents.join(" "));
+	}
+
+	var clickcallback = function(){
+		if(!clicking)return;
+		var e = unsafeWindow.event || e;
+		if(this === e.target) {
+			lastClicked.style.border = lastClicked.oldborder;
+			unsafeWindow.lastClicked = lastClicked = this;
+			lastClicked.oldborder = lastClicked.style.border;
+			lastClicked.style.border = "solid thin red";
+			alertPath(this);
+		}
+	};
+
+	all.forEach(function(el){
+		el.addEventListener("click", clickcallback);
+		//if(el.tagName == "A") el.oldhref=el.href; el.href ='javascript:void(0)';
+	});
+
+} addFunc(showLastClicked);
+
+function doneClicking(){
+	clicking = false;
+	lastClicked.style.border = lastClicked.oldborder;
+} addFunc(doneClicking);
