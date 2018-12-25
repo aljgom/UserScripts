@@ -406,6 +406,17 @@ setResolution = function(){
 
 
 
+    /*** ADD DATE TO FULLSCREEN TITLE ***/
+    // At the moment works with German youtube, and changes it to 'MM/DD/YYY'
+    setInterval(()=>{
+        var uploadDate = document.querySelectorAll('.date')[0].innerHTML.replace('Am ','').replace(' veröffentlicht','').split('.')
+        var dateString = ` - ${uploadDate[1]}/${uploadDate[0]}/${uploadDate[2]} `;
+        if(!document.querySelectorAll('.ytp-title-link')[0].innerHTML.match(dateString)){
+            document.querySelectorAll('.ytp-title-link')[0].innerHTML += dateString
+            // document.querySelectorAll('.title')[0].children[0].innerHTML += dateString
+            document.querySelectorAll('.ytp-title-link')[0].addedDate = true
+        }
+    },5000)
 
 
 
