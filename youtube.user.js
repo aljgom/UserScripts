@@ -414,7 +414,7 @@ setResolution = function(){
         var dateString = ` - ${uploadDate[1]}/${uploadDate[0]}/${uploadDate[2]} `;
         if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw') && !(uploadDate[2] == '2018' && uploadDate[1] == '02')){
             clearInterval(dateSkipInter)
-            dateSkipInter = setInterval(dateTitleSkip, 300)                                     // increase the repetition speed of the interval until date matched
+            dateSkipInter = setInterval(dateTitleSkip, 1000)                                     // increase the repetition speed of the interval until date matched
             if(!document.getElementsByClassName("video-stream")[0].muted)
                 document.getElementsByClassName("ytp-mute-button")[0].click();                  // mute
             document.getElementsByClassName("ytp-next-button")[0].click()                       // skip
