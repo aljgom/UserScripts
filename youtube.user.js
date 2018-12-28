@@ -408,15 +408,27 @@ setResolution = function(){
 
     /*** ADD DATE TO FULLSCREEN TITLE ***/
     // At the moment works with German youtube, and changes it to 'MM/DD/YYY'
-    setInterval(()=>{
+    // can set the month and year in the if statement below, and it will skip videos and play only the ones from that month
+    var dateTitleSkip = ()=>{
         var uploadDate = document.querySelectorAll('.date')[0].innerHTML.replace('Am ','').replace(' veröffentlicht','').split('.')
         var dateString = ` - ${uploadDate[1]}/${uploadDate[0]}/${uploadDate[2]} `;
+        if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw') && !(uploadDate[2] == '2018' && uploadDate[1] == '02')){
+            clearInterval(dateSkipInter)
+            dateSkipInter = setInterval(dateTitleSkip, 300)                                     // increase the repetition speed of the interval until date matched
+            document.getElementsByClassName("ytp-next-button")[0].click()                   // skip
+            return;
+        }
+        else {
+            clearInterval(dateSkipInter)
+            dateSkipInter = setInterval(dateTitleSkip, 3000)                                    // decrease the repetition speed of the interval until next video starts
+        }
         if(!document.querySelectorAll('.ytp-title-link')[0].innerHTML.match(dateString)){
             document.querySelectorAll('.ytp-title-link')[0].innerHTML += dateString
             // document.querySelectorAll('.title')[0].children[0].innerHTML += dateString
             document.querySelectorAll('.ytp-title-link')[0].addedDate = true
         }
-    },5000)
+    }
+    var dateSkipInter = setInterval(dateTitleSkip, 3000)
 
 
 
