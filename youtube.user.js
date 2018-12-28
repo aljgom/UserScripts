@@ -29,7 +29,7 @@
 
 
     HTMLCollection.prototype.forEach = Array.prototype.forEach;
-    debug =  ()=>{};  // debug = function(){console.log(...arguments);};
+    var debug =  ()=>{};  // debug = function(){console.log(...arguments);};
 
 
     /** LOOP AND REVERSE PLAYLIST **/
@@ -311,7 +311,7 @@
         outline: 0;
         }
         `;
-    style = document.createElement('style');
+    var style = document.createElement('style');
 
     if (style.styleSheet) {
         style.styleSheet.cssText = css;
@@ -373,7 +373,7 @@ setResolution = function(){
         var recom = setInterval(function(){
             if(document.location.toString().match("https://www.youtube.com/watch?")) {
                 clearInterval(recom);
-                hideRecommendations = function(){
+                var hideRecommendations = function(){
                     localStorage.hideRecommendations='true';
                     var nodes=document.getElementsByClassName("watch-sidebar")[0].style.display="none";
                     document.getElementById("watch7-main").className="";
@@ -387,8 +387,8 @@ setResolution = function(){
                     }
                 };
 
-                hide = function(){localStorage.hideRecommendations=true;};
-                unhide=function(){localStorage.hideRecommendations=false;};
+                var hide = function(){localStorage.hideRecommendations=true;};
+                var unhide=function(){localStorage.hideRecommendations=false;};
 
                 setInterval(function(){
                     if( localStorage.hideRecommendations == "true" ) hideRecommendations();
@@ -415,12 +415,16 @@ setResolution = function(){
         if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw') && !(uploadDate[2] == '2018' && uploadDate[1] == '02')){
             clearInterval(dateSkipInter)
             dateSkipInter = setInterval(dateTitleSkip, 300)                                     // increase the repetition speed of the interval until date matched
-            document.getElementsByClassName("ytp-next-button")[0].click()                   // skip
+            if(!document.getElementsByClassName("video-stream")[0].muted)
+                document.getElementsByClassName("ytp-mute-button")[0].click();                  // mute
+            document.getElementsByClassName("ytp-next-button")[0].click()                       // skip
             return;
         }
         else {
             clearInterval(dateSkipInter)
             dateSkipInter = setInterval(dateTitleSkip, 3000)                                    // decrease the repetition speed of the interval until next video starts
+            if(document.getElementsByClassName("video-stream")[0].muted)
+                document.getElementsByClassName("ytp-mute-button")[0].click();                  // unmute
         }
         if(!document.querySelectorAll('.ytp-title-link')[0].innerHTML.match(dateString)){
             document.querySelectorAll('.ytp-title-link')[0].innerHTML += dateString
