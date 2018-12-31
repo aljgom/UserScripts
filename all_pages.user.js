@@ -215,3 +215,13 @@ function doneClicking(){
 	clicking = false;
 	lastClicked.style.border = lastClicked.oldborder;
 } addFunc(doneClicking);
+
+
+
+/* Used for testing if the selection of and element hasn't changed
+ * Tests if the passed element exists, if not consoles.logs error message
+ */
+function testElement(name, el, scriptName){
+	if(!el) console.log(`%c${ scriptName }: ${name} selector changed, update script`,'color:orange')
+}
+addFunc(testElement);
