@@ -115,22 +115,27 @@ inter = monitorFileChange('http://localhost:8000/file',
 
 
 
-/* Waits for test to return a truthy value
+/* Waits for test function to return a truthy value
+example usage:
+    // wait for an element to exist, then save it to a variable
+    var el = await waitFor(()=>$('#el_id')))                 // second timeout argument optional, or defaults to 20 seconds
  */
-async function waitFor(test, timeout_ms=20*2000){             // args:("$('#el_id')", timeout_ms= 1000)
+async function waitFor(test, timeout_ms=20*2000){
     return new Promise(async(resolve,reject)=>{
         if( typeof(timeout_ms) != "number") reject("Timeout argument not a number in waitFor(selector, timeout_ms)");
         var freq = 100;
         var result
+        // wait until the result is truthy, or timeout
         while( result === undefined || result === false || result === null || result.length === 0 ){  // for non arrays, length is undefined, so != 0
-            if( timeout_ms % 1000 <freq)     log___('%c'+'waiting for: '+ test,'color:#809fff' );
-            if( (timeout_ms -= freq) < 0 ){  log___('%c'+'Timeout : '   + test,'color:#cc2900' );
-                                           resolve(false);
-                                           return;
-                                          }
+            if( timeout_ms % 1000 <freq)        log___('%c'+'waiting for: '+ test,'color:#809fff' );
+            if( (timeout_ms -= freq) < 0 ){     log___('%c'+'Timeout : '   + test,'color:#cc2900' );
+                resolve(false);
+                return;
+            }
             await sleep(freq);
-            result = typeof(test) === 'string' ? eval(test) : test();
+            result = typeof(test) === 'string' ? eval(test) : test();       // run the test and update result variable
         }
+        // return result if test passed
         log___('Passed: ', test);
         resolve(result);
     });
