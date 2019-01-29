@@ -64,7 +64,7 @@
     /**
      * redirect to 'other' url if wer're in 'check' url
      */
-    function redirect(check,other){ if( url == check) setTimeout(()=> document.location= other,300); }
+    function redirect(check, other){ if( url == check) setTimeout(()=> document.location = other, 300); }
 
     /**
      * Store usernames and passwords if needed into Script storage.
@@ -103,7 +103,9 @@
         //loginWhenFieldSet( gi("passcode1"), gi("hp-sign-in-btn"));
     }
 
-/** BARCLAYCARD **/                                             redirect("https://cards.barclaycardus.com/", "https://www.barclaycardus.com/servicing/home?secureLogin=");
+                                                                var loginPage = 'https://www.barclaycardus.com/servicing/home?secureLogin='
+                                                                if(url.match('https://www.barclaycardus.com/servicing/timeout')) document.location = loginPage;
+/** BARCLAYCARD **/                                             redirect("https://cards.barclaycardus.com/", loginPage);
     if( url                                                     .match("https://www.barclaycardus.com/servicing/authenticate") || url.match("https://www.barclaycardus.com/servicing/home") ){
         loginWhenFieldSet( await waitFor(()=>gi('password')), gi("loginButton") );
     }
@@ -138,7 +140,7 @@
         loginWhenFieldSet( unsafeWindow.password, gi("Logon") );
     }
 
-                                                                var loginPage = 'https://portal.discover.com/customersvcs/universalLogin/ac_main'
+                                                                loginPage = 'https://portal.discover.com/customersvcs/universalLogin/ac_main'
                                                                 redirect("https://www.discover.com/", loginPage);
                                                                 redirect("https://portal.discover.com/customersvcs/universalLogin/logoff_confirmed" ,  loginPage);
 /*** DISCOVER **/                                               redirect("https://portal.discover.com/customersvcs/universalLogin/timeout_confirmed",  loginPage);
