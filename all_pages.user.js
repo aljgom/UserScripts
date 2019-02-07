@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name       All Pages
-// @namespace  aljgom
-// @author     aljgom
+// @name         All Pages
+// @namespace    aljgom
+// @author       aljgom
 // @description  adds global functions/variables, other scripts depend on these
-// @match      http://*/*
-// @match      https://*/*
-// @grant      GM_setValue
-// @grant      GM_getValue
-// @grant      GM_deleteValue
-// @grant      GM_listValues
-// @grant      GM_xmlhttpRequest
-// @grant      unsafewindow
-// @grant      window.close
+// @match        http://*/*
+// @match        https://*/*
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_deleteValue
+// @grant        GM_listValues
+// @grant        GM_xmlhttpRequest
+// @grant        unsafewindow
+// @grant        window.close
 // ==/UserScript==
 
 var url = document.location.toString();

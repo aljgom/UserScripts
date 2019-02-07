@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name           Buses
-// @namespace      aljgom
-// @author         aljgom
-// @version        0.1
-// @description    Automatically fills out forms to search for bus tickets
-// @match          http://*/*
-// @match          https://*/*
+// @name         Buses
+// @namespace    aljgom
+// @author       aljgom
+// @version      0.1
+// @description  Automatically fills out forms to search for bus tickets
+// @match        http://*/*
+// @match        https://*/*
 // ==/UserScript==
     /////greyhound
 if(document.location.toString()=="https://www.greyhound.com/?1"){

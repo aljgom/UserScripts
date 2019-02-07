@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name       Code Signals
-// @namespace  aljgom
-// @version    0.1
+// @name         Code Signals
+// @namespace    aljgom
+// @version      0.1
 // @description  Run code when F5 is pressed, prevent reload, and handle how output is displayed
 //               Uses waitFor function from All Pages script
-// @match      https://app.codesignal.com/*
+// @match        https://app.codesignal.com/*
 // ==/UserScript==
 
 

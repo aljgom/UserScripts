@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name       Instant Login
-// @namespace  aljgom
-// @version    0.1
+// @name         Instant Login
+// @namespace    aljgom
+// @version      0.1
 // @description  Automates login forms to log in automatically to pages.
 //               I use it in conjunction with a password manager (LastPass),
 //               and it clicks log in buttons after LastPass fills up the required fields
 //               Uses WaitFor function defined in All Pages script
-// @match      http://*/*
-// @match      https://*/*
-// @grant      window.close
-// @grant      GM_setValue
-// @grant      GM_getValue
-// @grant      unsafeWindow
+// @match        http://*/*
+// @match        https://*/*
+// @grant        window.close
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        unsafeWindow
 // ==/UserScript==
 
 (async ()=>{

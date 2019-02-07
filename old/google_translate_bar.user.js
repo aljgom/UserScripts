@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name           Google Translate Bar
-// @namespace      aljgom
-// @version        0.1
-// @description    Translates whole page, hides translate bar, and adds a button to show it
-// @match          http://*/*
-// @match          https://*/*
-// @match          */*
+// @name         Google Translate Bar
+// @namespace    aljgom
+// @version      0.1
+// @description  Translates whole page, hides translate bar, and adds a button to show it
+// @match        http://*/*
+// @match        https://*/*
+// @match        */*
 // ==/UserScript==
 
 

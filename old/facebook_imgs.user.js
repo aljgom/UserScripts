@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name       Facebook Imgs
-// @namespace  aljgom
-// @author     aljgom
+// @name         Facebook Imgs
+// @namespace    aljgom
+// @author       aljgom
 // @description  Removes Images on facebook, temporarily shows them if 'i' is pressed
-// @match	   https://www.facebook.com/*
-// @match      http://www.facebook.com/*
+// @match	     https://www.facebook.com/*
+// @match        http://www.facebook.com/*
 // ==/UserScript==
 
 

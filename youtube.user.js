@@ -1,18 +1,17 @@
 // ==UserScript==
-// @name       Youtube
-// @namespace  aljgom
-// @version    0.1
+// @name         Youtube
+// @namespace    aljgom
+// @version      0.1
 // @description  -
 // @author       aljgom
-// @match      http://www.youtube.com/watch*
-// @match      https://www.youtube.com/watch*
-// @match      https://www.youtube.com/*
-// @match      http://www.youtube.com/embed*
-// @match      https://www.youtube.com/embed*
-// @match      https://ycapi.org/*
-// @grant      unsafewindow
-// @grant      window.close
-// @copyright  2012+, You
+// @match        http://www.youtube.com/watch*
+// @match        https://www.youtube.com/watch*
+// @match        https://www.youtube.com/*
+// @match        http://www.youtube.com/embed*
+// @match        https://www.youtube.com/embed*
+// @match        https://ycapi.org/*
+// @grant        unsafewindow
+// @grant        window.close
 // ==/UserScript==
 
 

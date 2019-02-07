@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name        Google Voice Forward
-// @namespace   aljgom
-// @version     0.1
-// @description Automatically enable/disable text message forwarding by doing a web request to check which one it should chose
-//              sends a text message to confim the change using a PHP google voice API in the backend
-// @match       https://www.google.com/voice/b/0#phones
+// @name         Google Voice Forward
+// @namespace    aljgom
+// @version      0.1
+// @description  Automatically enable/disable text message forwarding by doing a web request to check which one it should chose
+//               sends a text message to confim the change using a PHP google voice API in the backend
+// @match        https://www.google.com/voice/b/0#phones
 // ==/UserScript==
 function loadXMLDoc()
 {

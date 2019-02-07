@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name       Pomodoro
-// @namespace  aljgom
+// @name         Pomodoro
+// @namespace    aljgom
 // @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages
 //               If the modal is clicked, it will dissapear briefly, it will also open a google keep TO-DO list
-// @match      http://*/*
-// @match      https://*/*
-// @grant      GM_setValue
-// @grant      GM_getValue
-// @grant      GM_deleteValue
-// @grant      unsafewindow
+// @match        http://*/*
+// @match        https://*/*
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_deleteValue
+// @grant        unsafewindow
 // ==/UserScript==
 
 function Pomo(){

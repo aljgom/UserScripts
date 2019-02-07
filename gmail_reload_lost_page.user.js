@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name           Gmail Reload Lost Page
-// @namespace      aljgom
-// @version        0.1
-// @description    Reloads tabs that were opened from another gmail window and lost reference to it and now display nothing.
-//                 Redirects them to a new url that works, matching the email ID
-//                 This could be used as a bookmarklet instead as well, just using the redirection without checking for when to run it and doing it manually as needed
-//                 This uses a lot of ram, since each tab reloads a whole new Gmail page instead of all referencing to one (as expected, but keep it in mind)
-// @match          https://mail.google.com/?ui=2&view=btop*
+// @name         Gmail Reload Lost Page
+// @namespace    aljgom
+// @version      0.1
+// @description  Reloads tabs that were opened from another gmail window and lost reference to it and now display nothing.
+//               Redirects them to a new url that works, matching the email ID
+//               This could be used as a bookmarklet instead as well, just using the redirection without checking for when to run it and doing it manually as needed
+//               This uses a lot of ram, since each tab reloads a whole new Gmail page instead of all referencing to one (as expected, but keep it in mind)
+// @match        https://mail.google.com/?ui=2&view=btop*
 // ==/UserScript==
 
 (async function(){

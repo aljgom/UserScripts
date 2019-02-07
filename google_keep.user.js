@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name       Google Keep
+// @name         Google Keep
 // @namespace    aljgom
-// @version    0.1
+// @version      0.1
 // @description  Additional functionality and UI changes for Google Keep
-// @match      https://keep.google.com/*
+// @match        https://keep.google.com/*
 // @author       aljgom
 // @grant        none
 // ==/UserScript==
