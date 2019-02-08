@@ -23,7 +23,7 @@ HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCol
 function gi(id){ return document.getElementById(id); }
 function gc(cl){ return document.getElementsByClassName(cl); }
 
-if(!url.match(/.google.com|.youtube.com|.wallethub.com/)){      // breaks google docs, probably other google apps too
+if(!url.match(/.google.com|.youtube.com|.wallethub.com|.creditkarma/)){      // breaks google docs, probably other google apps too
 // Add sorting function to be able to sort using a key function
     Array.prototype.sortBy = function(key_func, reverse=false){
         return this.sort( (a, b) => {
