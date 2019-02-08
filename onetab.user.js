@@ -32,4 +32,29 @@
     }
     document.title = GM_getValue(url) + ' - OneTab'
 
+
+    /* Add 'open all links' buttons */
+    let links = document.querySelectorAll('body>div>div>a');
+    for(let link of links){
+        link.href = link.href.replace('http://chrome-extension','chrome-extension:');  /* replace for suspended tabs from The Great Suspender extension */
+    }
+
+    async function openAll(wait=false){
+        for(let link of links){
+            open(link.href);
+            if(wait) await sleep(3000);
+        }
+    }
+
+    let button = document.createElement('div');
+    button.innerHTML = `<a href='javascript:void(0)' id='openAll' style='font-size:12px'>Open all links</a>`
+    document.body.children[0].children[3].appendChild(button)
+    button.onclick = ()=>openAll(false);
+
+    button = document.createElement('div');
+    button.innerHTML = `<a href='javascript:void(0)' id='openAllDelayed' style='font-size:12px'>Open all links with delay</a>`
+    document.body.children[0].children[3].appendChild(button)
+    button.onclick = ()=>openAll(true);
+
+
 })();
