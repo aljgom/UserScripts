@@ -21,7 +21,7 @@
             document.title = decodeURIComponent(decodeURIComponent(decodeURIComponent(location.hash.substr(1)))).replace('/text','')   // need to decode it a few consecutive times
             return;
         }
-        if(!url.match(/#(NOTE|LIST)/)){             // no note/list selected, use name of manu
+        if(!url.match(/#(NOTE|LIST)/)){             // no note/list selected, use name of menu
             document.title = document.getElementsByClassName('gk6SMd')[0].innerText;
             return;
         }
@@ -56,33 +56,33 @@
         // Insert button into bottom toolbar
         var insertButton = function(){
             var container = document.querySelectorAll('.VIpgJd-TUo6Hb .IZ65Hb-s2gQvd')[0];
-            if(!container) return;                      // no note selected
+            if(!container || !url.match('#LIST')) return;       // no list selected
             var toolbar = container.parentElement.querySelectorAll('[role=toolbar]')[0];  // bottom toolbar
             if(toolbar.buttonInserted) return;
             toolbar.buttonInserted = true;
-            uncheckedIter = nextUnchecked();            // reset unchecked list
+            uncheckedIter = nextUnchecked();                    // reset unchecked list
 
             var button = document.createElement('div')
             toolbar.appendChild(button)
             Object.assign(button.style,{
-                userSelect: 'none',                     // disable text selection
+                userSelect: 'none',                             // disable text selection
                 color:      '#202124',
                 paddingTop: '.35em'
             });
             button.innerHTML = "Next"
-            button.className = "Q0hgme-LgbsSe" 			// copy class from sibling
+            button.className = "Q0hgme-LgbsSe" 			        // copy class from sibling
             button.id        = "next_button"
             button.onclick = async function scrollToNextUnchecked(){
                 var next = uncheckedIter.next().value
-                if(!next) return;                       // no unchecked boxes
+                if(!next) return;                               // no unchecked boxes
                 next.scrollIntoView();
                 container.scrollTo(0,container.scrollTop - 75)
-                next.style.background = '#e0e0e0'		// flash it's background
+                next.style.background = '#e0e0e0'		        // flash it's background
                 await sleep(300)
                 next.style.background = ''
             }
         }
-        setInterval(insertButton,2000)
+        setInterval(insertButton,2000)                          // interval to insert button in new opened lists
     })();
 
 })();
