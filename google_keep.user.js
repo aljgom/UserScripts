@@ -34,13 +34,14 @@
 
     /*** ADD BUTTON FOR SCROLLING TO NEXT UNCHECKED ITEM **/
     (async function(){
-        var nextUnchecked = function*(){
-            var i = 0;
-            var unchecked;
+        let nextUnchecked = function*(){        // generator that updates with the next unchecked item
+            let i = 0;
+            let unchecked;
             while(true){
-                if(!unchecked || unchecked.length != document.querySelectorAll('.VIpgJd-TUo6Hb')[0].querySelectorAll("[aria-checked=false]").length -1 ){ // uncheck variable hasnt' been set, or selection length changed
-                    unchecked = Array.from( document.querySelectorAll('.VIpgJd-TUo6Hb')[0].querySelectorAll("[aria-checked=false]") )
-                    unchecked.splice(0,1)								// remove first result, it's not the correct match
+                let currentList = document.querySelectorAll('.VIpgJd-TUo6Hb')[0].querySelectorAll("[aria-checked=false]");
+                if(!unchecked || unchecked.length != currentList.length -1 ){   // uncheck variable hasnt' been set, or selection length changed
+                    unchecked = Array.from( currentList )                       // update unchecked list
+                    unchecked.splice(0,1)								        // remove first result, it's not the correct match
                     i = 0;
                 }
                 if(unchecked.length == 0)
@@ -51,18 +52,36 @@
                 }
             }
         }
-        var uncheckedIter;
+
+        let lastChecked = function(){
+            let checked = document.querySelectorAll('.VIpgJd-TUo6Hb')[0].querySelectorAll("[aria-checked=true]")
+            return checked[checked.length-1]
+        }
+
+        let scrollToCheckBox = async function(box){
+            let container = document.querySelectorAll('.VIpgJd-TUo6Hb .IZ65Hb-s2gQvd')[0];
+            box.scrollIntoView();
+            container.scrollTo(0,container.scrollTop - 75)
+            box.style.background = '#e0e0e0'		        // flash it's background
+            await sleep(300)
+            box.style.background = ''
+        }
+
+        let uncheckedIter;
 
         // Insert button into bottom toolbar
-        var insertButton = function(){
-            var container = document.querySelectorAll('.VIpgJd-TUo6Hb .IZ65Hb-s2gQvd')[0];
+        let insertButton = function(){
+            let container = document.querySelectorAll('.VIpgJd-TUo6Hb .IZ65Hb-s2gQvd')[0];
             if(!container || !url.match('#LIST')) return;       // no list selected
-            var toolbar = container.parentElement.querySelectorAll('[role=toolbar]')[0];  // bottom toolbar
-            if(toolbar.buttonInserted) return;
+            let toolbar = container.parentElement.querySelectorAll('[role=toolbar]')[0];  // bottom toolbar
+            if(toolbar.buttonInserted) return;                  // return if list already has button
             toolbar.buttonInserted = true;
-            uncheckedIter = nextUnchecked();                    // reset unchecked list
+            if(lastChecked() !== undefined){
+                scrollToCheckBox(lastChecked());                // scroll to last element checked
+            }
+            uncheckedIter = nextUnchecked();                    // reset unchecked list (if new list opened)
 
-            var button = document.createElement('div')
+            let button = document.createElement('div')
             toolbar.appendChild(button)
             Object.assign(button.style,{
                 userSelect: 'none',                             // disable text selection
@@ -72,14 +91,10 @@
             button.innerHTML = "Next"
             button.className = "Q0hgme-LgbsSe" 			        // copy class from sibling
             button.id        = "next_button"
-            button.onclick = async function scrollToNextUnchecked(){
-                var next = uncheckedIter.next().value
+            button.onclick = function scrollToNextUnchecked(){
+                let next = uncheckedIter.next().value
                 if(!next) return;                               // no unchecked boxes
-                next.scrollIntoView();
-                container.scrollTo(0,container.scrollTop - 75)
-                next.style.background = '#e0e0e0'		        // flash it's background
-                await sleep(300)
-                next.style.background = ''
+                scrollToCheckBox(next);
             }
         }
         setInterval(insertButton,2000)                          // interval to insert button in new opened lists
