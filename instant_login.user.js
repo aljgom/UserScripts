@@ -98,28 +98,28 @@
 
 
 
-/*** BANK OF AMERICA **/
+/*** BANK OF AMERICA ***/
     if( url                                                     == "https://www.bankofamerica.com/"){
         //loginWhenFieldSet( gi("passcode1"), gi("hp-sign-in-btn"));
     }
 
                                                                 var loginPage = 'https://www.barclaycardus.com/servicing/home?secureLogin='
                                                                 if(url.match('https://www.barclaycardus.com/servicing/timeout')) document.location = loginPage;
-/** BARCLAYCARD **/                                             redirect("https://cards.barclaycardus.com/", loginPage);
+/*** BARCLAYCARD ***/                                             redirect("https://cards.barclaycardus.com/", loginPage);
     if( url                                                     .match("https://www.barclaycardus.com/servicing/authenticate") || url.match("https://www.barclaycardus.com/servicing/home") ){
         loginWhenFieldSet( await waitFor(()=>gi('password')), gi("loginButton") );
     }
 
                                                                 redirect("https://www.chase.com/", "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
 
-/*** CHASE **/                                                //  redirect("https://secure07a.chase.com/web/auth/dashboard#/dashboard/index/index","https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
+/*** CHASE ***/                                                //  redirect("https://secure07a.chase.com/web/auth/dashboard#/dashboard/index/index","https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline");
     if( url                                                     == "https://www.chase.com/" || url == "https://secure07a.chase.com/web/auth/#/logon/logon/chaseOnline"){
         setAccountChooseAlert('');
         loginWhenFieldSet( await waitFor(()=>gi('password-input-field')), gi('signin-button') );
     }
 
                                                                 redirect("https://www.capitalone.com/sign-out/?service=e", "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
-/*** CAPITAL ONE **/                                            redirect("https://www.capitalone.com/",                    "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
+/*** CAPITAL ONE ***/                                            redirect("https://www.capitalone.com/",                    "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
     if( url                                                     .match("https://verified.capitalone.com/sic-ui/#/esignin")){
         loginWhenFieldSet(await waitFor(()=>gi('password')), gi("id-signin-submit") ); }
     if( url                                                     .match("https://verified.capitalone.com/challenge.html") ){
@@ -129,10 +129,18 @@
         if(el) el.click();
 
     }
+
+
+                                                                loginPage = "https://www.credit.com/login/";
+/*** CREDIT.COM ***/                                            redirect("https://www.credit.com/", loginPage)
+    if(url                                                      .match(loginPage)){
+        loginWhenFieldSet( await waitFor(()=>gi("PASSWORDCS")), gi("Login_execute") );
+    }
+
                                                                 redirect("https://secure.creditsesame.com/s/signup1v3", "https://secure.creditsesame.com/s/login"); // loggeed out page
 /*** CREDIT SESAME ***/                                         redirect("https://www.creditsesame.com/", "https://secure.creditsesame.com/s/login");
     if(url                                                      .match("https://secure.creditsesame.com/s/login") ){
-        loginWhenFieldSet( unsafeWindow.password, gi("loginButton") );
+        loginWhenFieldSet( await waitFor(()=>gi("password")), gi("loginButton") );
     }
 
 /*** CREDITKARMA ***/                                           redirect("https://www.creditkarma.com/", "https://www.creditkarma.com/auth/logon");
@@ -143,17 +151,17 @@
                                                                 loginPage = 'https://portal.discover.com/customersvcs/universalLogin/ac_main'
                                                                 redirect("https://www.discover.com/", loginPage);
                                                                 redirect("https://portal.discover.com/customersvcs/universalLogin/logoff_confirmed" ,  loginPage);
-/*** DISCOVER **/                                               redirect("https://portal.discover.com/customersvcs/universalLogin/timeout_confirmed",  loginPage);
+/*** DISCOVER ***/                                               redirect("https://portal.discover.com/customersvcs/universalLogin/timeout_confirmed",  loginPage);
     if( url                                                     == loginPage){
         loginWhenFieldSet( await waitFor(()=>gi("password-content")),gc("log-in-button")[1]);
     }
 
-/*** EXPEDIA **/
+/*** EXPEDIA ***/
     if( url                                                     .match("https://www.expedia.com/user/itin?")){
         loginWhenFieldSet( await waitFor(()=>gi("unified-itin-password")), gi("unified-itin-submit-button") );
     }
 
-/** FIFTH THIRD **/
+/*** FIFTH THIRD ***/
     if( url                                                     == "https://www.53.com/content/fifth-third/en.html"){
         waitFor("gc('desktop-login login-btn')[0]",20000)
         .then(r=>r.click());
@@ -161,7 +169,7 @@
     }
 
 
-/** FREEDOMPOP **/                                              redirect("https://www.freedompop.com/", "https://www.freedompop.com/login.htm");
+/*** FREEDOMPOP ***/                                              redirect("https://www.freedompop.com/", "https://www.freedompop.com/login.htm");
     if( url                                                     == "https://www.freedompop.com/login.htm"  ||
         url                                                     .match( "https://support.freedompop.com/app/utils/login_form" ) ){
         var pw = await waitFor(()=>document.getElementsByName("signin-password-full")[0]);
@@ -181,18 +189,18 @@
 
 
                                                                 redirect("https://www.mint.com/",  "https://mint.intuit.com/bills.event");
-/*** MINT **/                                                   redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
+/*** MINT ***/                                                   redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
     if( url                                                     .match("accounts.intuit.com/index.html")){
         loginWhenFieldSet(await waitFor(()=>gi('ius-password')), gi("ius-sign-in-submit-btn") );        //  });
     }
 
 
-/*** MYNETDIARY **/                                             redirect("http://www.mynetdiary.com/", "http://www.mynetdiary.com/daily.do");
+/*** MYNETDIARY ***/                                             redirect("http://www.mynetdiary.com/", "http://www.mynetdiary.com/daily.do");
 
 
                                                                 redirect("https://www.paypal.com/","https://www.paypal.com/signin");
                                                                 redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
-/** PAYPAL **/                                                  redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
+/*** PAYPAL ***/                                                  redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
     if( url                                                     .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
         loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
     }
@@ -204,7 +212,7 @@
                                                                    url == "https://home.personalcapital.com/page/login/app")
                                                                     document.location = 'https://home.personalcapital.com/page/login/app#/all-transactions';
                                                                 setTimeout(()=>{
-/** PERSONAL CAPITAL **/                                            redirect( "https://www.personalcapital.com/" , "https://home.personalcapital.com/page/login/goHome" );  },2000);
+/*** PERSONAL CAPITAL ***/                                            redirect( "https://www.personalcapital.com/" , "https://home.personalcapital.com/page/login/goHome" );  },2000);
     if( url                                                     .match("https://home.personalcapital.com/page/login/")){
         // enter username if password form hidden
         if(gi('form-password').style.display != 'block') {
@@ -220,7 +228,7 @@
 
 
                                                                 redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");        // timed out page
-/*** PENFED **/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
+/*** PENFED ***/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
     // username
     if(url                                                      == "https://www.penfed.org/login/"){
         let user_field = await waitFor(()=>gi("mlloginusernameinput"));
@@ -232,7 +240,7 @@
         loginWhenFieldSet( await waitFor(()=>gi("ctl00_ctl00_MainContentPlaceHolder_cphSecurityMainContent_txtPassword")), gi("ctl00_ctl00_MainContentPlaceHolder_imgLogon") );
     }
 
-/*** SAVVYMONEY **/                                             redirect("https://www.savvymoney.com/", "https://www.savvymoney.com/login");
+/*** SAVVYMONEY ***/                                             redirect("https://www.savvymoney.com/", "https://www.savvymoney.com/login");
     if(url                                                      .match("https://www.savvymoney.com/login")){
         loginWhenFieldSet(await waitFor(()=>gi("password-sign-in")), gi("login-btn") );
     }
@@ -265,7 +273,7 @@
                                                             //    redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::",  loginPage); // account home page, we'll redirect if error by looking for element instead
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
                                                                 redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page (there's 2)
-/***UIECU ***/                                                  redirect("https://uoficreditunion.org/",                                     loginPage);
+/*** UIECU ***/                                                  redirect("https://uoficreditunion.org/",                                     loginPage);
     if( url                                                     == loginPage ){
         await sleep(1000);
         // reload on error
@@ -293,7 +301,7 @@
     }
 
 
-/*** TRENDNET ROUTER **/
+/*** TRENDNET ROUTER ***/
     if( url                                                     .match("http://192.168.10.1/login.asp") )  {
         let user_field = await waitFor(()=>gi("UserName"));
         user_field.value = getStorageValue('username');
@@ -310,7 +318,7 @@
 
 
                                                                 redirect("https://www.uber.com/es/ec/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
-/** UBER **/                                                    redirect("https://www.uber.com/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
+/*** UBER ***/                                                   redirect("https://www.uber.com/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
     if( url                                                     .match("https://auth.uber.com/login/") )  {
         /*      field doesnt recognize value when clicked. Neither automated or manually.
         let user_field = await waitFor(()=>gi('useridInput'));
@@ -321,7 +329,7 @@
     }
 
 
-/*** WALLETHUB **/                                              redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
+/*** WALLETHUB ***/                                             redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
     if(url                                                      .match("https://wallethub.com/join/login")){
         console.log("InstantLogin: can't get it to click the submit button")
         // only works when right clicking submit button before this code. (?)
