@@ -18,7 +18,7 @@
             return;
         }
         if(url.match(/#search/)){
-            document.title = decodeURIComponent(decodeURIComponent(decodeURIComponent(location.hash.substr(1)))).replace('/text','')   // need to decode it a few consecutive times
+            document.title = decodeURIComponent(decodeURIComponent(decodeURIComponent(location.hash.substr(1)))).replace('/text','').replace('search=','Search: ')   // need to decode it a few consecutive times
             return;
         }
         if(!url.match(/#(NOTE|LIST)/)){             // no note/list selected, use name of menu
