@@ -28,15 +28,16 @@ if(url.match( 'https://www.ebay.com/sch/')){
 
     /* USING OLD NOW. NEW -now using checkViewed function from below */
     /* START OLD */
-    $(".sresult").each(function(){
-        if($(".prRange",$(this)).length > 0) $(this).css("display","none");
+    $(".s-item").each(function(){
+        let price = $(".s-item__price", $(this))[0];
+        if(price.innerText.match('to')) $(this).css("display","none");
     });
 
     /* END OLD */
     $('body').append('<input type="button" value="Show All" id="showAllButton"> ');
 
     $("#showAllButton").addClass("btn").css({position:"fixed",top:"534px",right:0, "font-size":"11px"});
-    showAllButton.onclick = ()=>{  $(".sresult").css("display","initial"); };
+    showAllButton.onclick = ()=>{  $(".s-item").css("display","initial"); };
 
     /* SHOW DELIVERY DATES */
     /* Create a button that when clicked will load the estimated delivery dates of each of the search results, when they come into view */
@@ -54,7 +55,7 @@ if(url.match( 'https://www.ebay.com/sch/')){
 
 
     function checkViewed(){
-      $(".sresult").each((i,e)=>{
+      $(".s-item").each((i,e)=>{
         if( !e.viewed && isScrolledIntoView(e) ) {  /* run function first time el in view */
           e.viewed = true;
           loadDates(i,e);    /* inserting hide price ranges into this function now as well.. */
@@ -75,7 +76,7 @@ if(url.match( 'https://www.ebay.com/sch/')){
     }
 
     function loadDates(i,e){
-      $.ajax($(".vip",e)[0].href).done((data)=>{
+      $.ajax($(".s-item__link",e)[0].href).done((data)=>{
         console.log('%cLoaded result..' ,'color:orange');
         try{ /* Traceback isn't printed for errors here. Log better? */
             var deliveryDate = $(".vi-acc-del-range",data)[0];
@@ -98,7 +99,7 @@ if(url.match( 'https://www.ebay.com/sch/')){
                 $(e).css("display","none");
             }
         }catch(err){
-            console.log('Error in ajax callback for', $(".vip",e)[0].href);
+            console.log('Error in ajax callback for', $(".s-item__link",e)[0].href);
             console.log(err.message);
             $(e).css("background","#ffcccc");
         }
