@@ -24,7 +24,6 @@
         document.getElementById('site-footer').style.display = 'none'
         document.title = 'Calendars Airbnb'
         document.body.style.zoom = .6;
-        //    document.querySelector('[aria-label="Calendar"]').setAttribute('style', '');
 
         const rooms = [
                 "https://www.airbnb.com/rooms/31243489?guests=1&adults=1",
@@ -46,13 +45,14 @@
             container.style.padding = '2em';
             document.body.append(container);
             (async function(){
-                //w.location = room;
-                let w = open(room, '' , 'height:1000px');
-                addEventListener('beforeunload', ()=>w.close());
-                setTimeout(()=>w.close(),2*60*1000);
+                let iframe = document.createElement('iframe')
+                // iframe.style.display = 'none'
+                iframe.src = room
+                document.body.appendChild(iframe)
                 await sleep(3000);
+                let w = iframe.contentWindow
                 let cal = await waitFor(()=>w.document.querySelector('[aria-label="Calendar"]'), 10*1000)
-                await sleep(1000)
+                await sleep(2000)
                 if(!cal) {w.close(); return}
                 let cal2 = cal.cloneNode(true);
                 cal2.setAttribute('style', '');
@@ -62,10 +62,9 @@
                 Array.from(cal2.querySelectorAll('._47fvp1'))               // selector for a day of the calendar
                 .filter(e=>e.innerText == new Date().getDate())[0]
                 .style.border = 'solid thin red'
-                w.close();
-                log('closed')
+                iframe.src = ''
+                document.body.removeChild(iframe);
             })()
         }
-        open().close();
     }
 })();
