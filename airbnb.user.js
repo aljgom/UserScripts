@@ -51,20 +51,25 @@
                 document.body.appendChild(iframe)
                 await sleep(3000);
                 let w = iframe.contentWindow
-                let cal = await waitFor(()=>w.document.querySelector('[aria-label="Calendar"]'), 10*1000)
-                await sleep(2000)
+                let cal = await waitFor(()=>w.document.querySelector('[aria-label="Calendar"]'), 60*1000)
                 if(!cal) {w.close(); return}
+                await sleep(6*1000);                                                     // wait for 2 months to load
                 let cal2 = cal.cloneNode(true);
                 cal2.setAttribute('style', '');
                 container.appendChild((await waitFor(()=>w.document.querySelectorAll('._18hrqvin')[0])).cloneNode(true)) // title
                 container.appendChild(cal2);
                 // highlight current day
-                Array.from(cal2.querySelectorAll('._47fvp1'))               // selector for a day of the calendar
+                let today = Array.from(cal2.querySelectorAll('._47fvp1'))               // selector for a day of the calendar
                 .filter(e=>e.innerText == new Date().getDate())[0]
-                .style.border = 'solid thin red'
+                if(today.parentElement.parentElement.className.match('_12fun97')){      // avaliable
+                    today.style.border = 'solid thin #71d800';                          // green
+                }else {
+                    today.style.border = 'solid thin #ff8686';                          // red
+                }
                 iframe.src = ''
                 document.body.removeChild(iframe);
             })()
+            await sleep(4*1000)
         }
     }
 })();
