@@ -11,6 +11,10 @@
 // ==/UserScript==
 
 (async function() {
+    while(typeof(waitFor) === "undefined"){
+        console.log('waiting for All Pages')
+        await new Promise(resolve=>setInterval(resolve, 200))
+    }
     'use strict';
     let url = document.location.toString();
     let sleep = ms => new Promise(resolve=>setTimeout(resolve,ms));
@@ -53,7 +57,7 @@
         });
 
         let runHackerrank = async function(){
-            if( !( url.match(/challenge|contest|tests/) //&&
+            if( !( url.match('hackerrank.com/(challenge|contest|tests)')  //&&
                    //url.match('problem')                                   // problem tab could also not have 'problem' specified, and it could be blank, ignore for now.
                )) return;                                                   // only run it in the 'problem' tab
 
@@ -68,7 +72,7 @@
 
             // Add area where cloned output will be placed
             var output
-			if(url.match('tests')){
+			if(url.match('hackerrank.com/tests')){
 				output = await waitFor(()=>gi('runstatus'));
                 var question = document.querySelector('[aria-label="Question Content"]').innerText;
                 console.log(question)
@@ -144,7 +148,7 @@
 
             // select "Run Code" button
             var run_code;
-            if(url.match('tests|challenges')){
+            if(url.match('hackerrank.com/(tests|challenges)')){
                 run_code = await waitFor(()=>gc('msR')[0]);
             }
             else{
