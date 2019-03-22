@@ -46,6 +46,7 @@
             document.body.append(container);
             (async function(){
                 let iframe = document.createElement('iframe')
+                iframe.style.width = '100%'                                             // make iframe wide so the calendar loads 2 months and not just one
                 // iframe.style.display = 'none'
                 iframe.src = room
                 document.body.appendChild(iframe)
@@ -53,7 +54,7 @@
                 let w = iframe.contentWindow
                 let cal = await waitFor(()=>w.document.querySelector('[aria-label="Calendar"]'), 60*1000)
                 if(!cal) {w.close(); return}
-                await sleep(6*1000);                                                     // wait for 2 months to load
+                await sleep(1*1000);                                                     // wait for calendar to load
                 let cal2 = cal.cloneNode(true);
                 cal2.setAttribute('style', '');
                 container.appendChild((await waitFor(()=>w.document.querySelectorAll('._18hrqvin')[0])).cloneNode(true)) // title
