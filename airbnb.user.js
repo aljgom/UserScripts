@@ -60,8 +60,9 @@
                 container.appendChild((await waitFor(()=>w.document.querySelectorAll('._18hrqvin')[0])).cloneNode(true)) // title
                 container.appendChild(cal2);
                 // highlight current day
-                let today = Array.from(cal2.querySelectorAll('._47fvp1'))               // selector for a day of the calendar
+                let today = Array.from(cal2.querySelectorAll('._mqakwe'))               // selector for a day of the calendar
                 .filter(e=>e.innerText == new Date().getDate())[0]
+                if(!today) log("Couldn't select 'Today'")
                 if(today.parentElement.parentElement.className.match('_12fun97')){      // avaliable
                     today.style.border = 'solid thin #71d800';                          // green
                 }else {
