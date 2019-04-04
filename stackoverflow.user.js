@@ -2,7 +2,7 @@
 // @name         Stackoverflow
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
+// @description  Remove language / topic from title so it won't be cluttered
 // @author       You
 // @match        https://stackoverflow.com/questions*
 // @grant        none

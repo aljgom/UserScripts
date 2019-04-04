@@ -2,7 +2,7 @@
 // @name         Megabus
 // @namespace    aljgom
 // @version      0.1
-// @description  enter something useful
+// @description  Parse trips, find lowest prices, create a table with them
 // @match        https://us.megabus.com/journey-planner/journeys*
 // ==/UserScript==
 
