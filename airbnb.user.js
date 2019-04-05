@@ -3,8 +3,10 @@
 // @namespace    aljgom
 // @version      0.1
 // @description  Moves the calendar to the top of the page to be able to see availability easily
-//               If you add ?loadCals to the url, it will load all the links in the 'rooms' array,
+//               If you add &loadCals=1 to the url, it will load all the links in the 'rooms' array,
 //               and clone their calendars into the main page to have them all in one
+//               Also highlights todays date on all of them, showing green for available
+//               and red for unavailable
 // @author       aljgom
 // @match        https://www.airbnb.com/rooms/*
 // @grant        none
