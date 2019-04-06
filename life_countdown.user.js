@@ -2,29 +2,37 @@
 // @name         Life Countdown
 // @author       aljgom
 // @namespace    aljgom
-// @description  adds a simple countdown to the bottom corner of every page, that counts down how many years, months, days, hours, minutes, seconds until a specified date
+// @description  Adds a countdown to the bottom corner of every page, that counts down how many years, months, days, hours, minutes, seconds until a specified date
+//               runs it only while the page is focused, and pauses it when it's not
 // @match        http://*/*
 // @match        https://*/*
 // ==/UserScript==
 
 
 (function(){
-	var lifeCountDown = document.createElement("div");
+	let lifeCountDown = document.createElement("div");
 	document.body.appendChild(lifeCountDown);
 
-	var updateCountDown = function(){
-		var a = new Date("04/05/2020");
-		var b = new Date();
-		var c = Math.floor((a - b)/1000);
-		var s = c % 60;  s = s < 10 ? "0" + s : s; c = Math.floor(c/60);
-		var m = c % 60;  m = m < 10 ? "0" + m : m; c = Math.floor(c/60);
-		var h = c % 24;  h = h < 10 ? "0" + h : h; c = Math.floor(c/24);
-		var d = c % 365; d = d < 10 ? "0" + d : d; c = Math.floor(c/365);
-		var y = c;
+	let updateCountDown = function(){
+        let zeroPad = (n,zs) => String(n).padStart(zs, '0')
+		let endDate = new Date("04/05/2020");
+		let now = new Date();
+		let diff = Math.floor((endDate - now)/1000);
+        let s = zeroPad(diff % 60, 2); diff = Math.floor(diff/60);
+        let m = zeroPad(diff % 60, 2); diff = Math.floor(diff/60);
+		let h = zeroPad(diff % 24, 2); diff = Math.floor(diff/24);
+		// let diff = zeroPad(c % 365, 3); diff = Math.floor(diff/365);
+		// more elaborate calculation for days and years, because of leap years
+		let next = new Date(endDate)						   // clone end date
+		next.setFullYear(now.getFullYear())				       // change the year to the next occurrence of that same date
+		if(now > next) next.setFullYear(next.getFullYear() + 1);
+		let d = Math.floor((next-now)/(24*60*60*1000))		   // calculate the days until then
+		d = zeroPad(d, 3)
+		let y = endDate.getFullYear() - next.getFullYear();    // and the years from that date until the end date
 		lifeCountDown.innerHTML = y+":"+d+":"+h+":"+m+":"+s;
 	};
 
-	var inter = setInterval(updateCountDown,1000);
+	let inter = setInterval(updateCountDown,1000);
 	window.addEventListener("focus",function(){
 		updateCountDown();
 		clearInterval(inter);
