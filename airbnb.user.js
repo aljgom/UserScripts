@@ -28,19 +28,34 @@
         document.body.style.zoom = .6;
 
         const rooms = [
-                "https://www.airbnb.com/rooms/31243489?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/31243767?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/31144603?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/31145170?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/31145452?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/31145653?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30110320?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30110843?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30111035?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30111263?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30111431?guests=1&adults=1",
-                "https://www.airbnb.com/rooms/30111431?guests=1&adults=1",]
+            "https://www.airbnb.com/rooms/show/34156181",
+            "https://www.airbnb.com/rooms/show/34156617",
+            "https://www.airbnb.com/rooms/show/34156946",
+            "https://www.airbnb.com/rooms/show/34157105",
+            "https://www.airbnb.com/rooms/show/34157217",
+            "https://www.airbnb.com/rooms/show/34157335",
+            "-",
+            "https://www.airbnb.com/rooms/31243489?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/31243767?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/31144603?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/31145170?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/31145452?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/31145653?guests=1&adults=1",
+            "-",
+            "https://www.airbnb.com/rooms/30110320?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/30110843?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/30111035?guests=1&adults=1",
+            "https://www.airbnb.com/rooms/30111263?guests=1&adults=1",]
         for(let room of rooms){
+            if(room == "-") {                                                           // add an horizontal line
+                let line = document.createElement('div');
+                line.style.width = "100%";
+                line.style.height = "3px";
+                line.style.float = "left";
+                line.style.background = "gray";
+                document.body.append(line);
+                continue;
+            }
             log(room)
             let container = document.createElement('div');
             container.style.float = 'left';
@@ -57,9 +72,14 @@
                 let cal = await waitFor(()=>w.document.querySelector('[aria-label="Calendar"]'), 60*1000)
                 if(!cal) {w.close(); return}
                 await sleep(1*1000);                                                     // wait for calendar to load
+                // copy title and add hyperlink
+                let title = document.createElement('a');
+                title.href = room;
+                title.appendChild( (await waitFor(()=>w.document.querySelectorAll('._18hrqvin')[0])).cloneNode(true) )
+                container.appendChild(title)
+                // copy calendar
                 let cal2 = cal.cloneNode(true);
                 cal2.setAttribute('style', '');
-                container.appendChild((await waitFor(()=>w.document.querySelectorAll('._18hrqvin')[0])).cloneNode(true)) // title
                 container.appendChild(cal2);
                 // highlight current day
                 let today = Array.from(cal2.querySelectorAll('._mqakwe'))               // selector for a day of the calendar
