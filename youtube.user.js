@@ -2,7 +2,18 @@
 // @name         Youtube
 // @namespace    aljgom
 // @version      0.1
-// @description  -
+// @description  Various modifications:
+//               Loop and reverse playlist
+//               Autoreload on error
+//               Download mp3
+//               Change speed for playlist
+//               Skip videos in playlist
+//               Add a remote control mini window
+//               Select highest resolution
+//               Close 'click here' anotations
+//               Get rid of recommendations
+//               Add Date to fullscren title, skip videos depening on date
+//               Keyboard speed control
 // @author       aljgom
 // @match        http://www.youtube.com/watch*
 // @match        https://www.youtube.com/watch*
