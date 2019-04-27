@@ -1,17 +1,19 @@
 // ==UserScript==
 // @name         Airbnb
 // @namespace    aljgom
-// @version      0.1
+// @version      0.2
 // @description  Moves the calendar to the top of the page to be able to see availability easily
 //               If you add &loadCals=1 to the url, it will load all the links in the 'rooms' array,
 //               and clone their calendars into the main page to have them all in one
 //               Also highlights todays date on all of them, showing green for available
 //               and red for unavailable
+//               if you use loadCals=2 it runs another version, in which it makes direct calls
+//               to the airbnb API to get only the calendar data for the bookings,
+//               and creates a visualization for all of the days
 // @author       aljgom
 // @match        https://www.airbnb.com/rooms/*
 // @grant        none
 // ==/UserScript==
-
 
 
 (async function(){
@@ -20,11 +22,11 @@
     let cal = await waitFor(()=>document.querySelector('[aria-label="Calendar"]'));
     cal.setAttribute('style', 'position:fixed !important; top:0; left:0');
 
-    if(url.match("loadCals")){
+    if(url.match("loadCals=1")){
+        document.title = 'Calendars Airbnb'
         document.querySelector('[role="banner"]').style.display = 'none'
         document.getElementById('site-content').style.display = 'none'
         document.getElementById('site-footer').style.display = 'none'
-        document.title = 'Calendars Airbnb'
         document.body.style.zoom = .6;
 
         const rooms = [
@@ -46,6 +48,11 @@
             "https://www.airbnb.com/rooms/30110843?guests=1&adults=1",
             "https://www.airbnb.com/rooms/30111035?guests=1&adults=1",
             "https://www.airbnb.com/rooms/30111263?guests=1&adults=1",]
+
+        let timestamp = document.createElement('div');
+        timestamp.innerHTML = (new Date).toLocaleString();
+        timestamp.style.fontSize = "24px";
+        document.body.append(timestamp);
         for(let room of rooms){
             if(room == "-") {                                                           // add an horizontal line
                 let line = document.createElement('div');
@@ -95,5 +102,101 @@
             })()
             await sleep(4*1000)
         }
+    }
+
+    if(url.match("loadCals=2")){
+        document.title = 'Calendars Airbnb 2';
+        let ids = [34156181,
+        34156617,
+        34156946,
+        34157105,
+        34157217,
+        34157335,
+        0,
+        31243489,
+        31243767,
+        31144603,
+        31145170,
+        31145452,
+        31145653,
+        0,
+        30110320,
+        30110843,
+        30111035,
+        30111263]
+
+        let log = console.log.bind(console);
+        let isToday = function(date){
+            let d1 = date.split('-').splice(1).map(n=>parseInt(n))
+            let d2 = (new Date).toLocaleDateString().split('/').splice(0,2).map(n=>parseInt(n))
+            return d1[0] == d2[0] && d1[1] == d2[1]
+        }
+        let promises = [];
+        let resolved = 0;
+        let loading = () => `<br><br><br><div align="center"> loading ${"＊".repeat(resolved)}${"．".repeat(ids.filter(id=>id>0).length - resolved)} </div>`;
+        document.body.innerHTML = loading()
+        document.body.style.align = "center"
+        document.body.style.background = 'black';
+        document.body.style.color = "white";
+
+        for(let id of ids){
+            if(id == 0) {
+                promises.push(['%c','']) // push empty, with empty style, new line is added later to it
+                continue;
+            }
+            promises.push(fetch(`https://www.airbnb.com/api/v2/calendar_months?_format=with_conditions&count=4&currency=USD&key=d306zoyjsyarp7ifhu67rjxn52tv0t20&listing_id=${id}&locale=en&month=4&year=2019`)
+            .then(response => response.json())
+            .then(async function(json) {
+                // JSON.stringify(json, null, 2);
+                resolved += 1;
+                console.log(`loaded ${id}`);
+                document.body.innerHTML = loading();
+                await new Promise(resolve => setTimeout(resolve,10));   // wait a little bit for last part of loading animation to be visible
+                // process the first 2 months
+                var out = ''
+                var styles = []
+                for( let month of json.calendar_months ){
+                    var current = month.month
+                    for(let day of month.days){
+                        //log(day)
+                        if(current != day.date.split('-')[1]) continue	// ignore ending days of prev month, and begining of next. Use only current month
+                        out += `%c${day.date.split('-')[2]}%c `;		// 2 styles, for the day, and for the white space
+                        styles.push(`color:${day.available ? 'lightgreen' : 'lightgray'}; background:${isToday(day.date) ? (day.available ? '#005015' : '#671900') :''}`)
+                        styles.push('')									// style for the blank space between numbers
+                    }
+                    out += "| "
+                }
+                return [out, styles]
+            }))
+        }
+
+
+        Promise.all(promises).then(outs=>{
+            // log to console
+            let final = '';
+            let styles = []
+            for(let out of outs){
+                final += out[0] +'\n';
+                styles = styles.concat(out[1])
+            }
+            log(final, ...styles)
+
+            // write html
+            document.body.innerHTML = '<br>'
+            document.body.style.background = 'black';
+            for(let out of outs){
+                if(out[0] == "%c"){		// empty line
+                    document.body.innerHTML += '<br>';
+                }
+                let style = [''].concat(out[1]);
+                document.body.innerHTML +=  `<div style="white-space: nowrap">${
+                    out[0].split("%c")
+                    .map( (str,i)=>`<span style="${style[i]}">${str}</span>` )
+                    .join('')  // for each '%c' create a styled span
+                }</div>`
+            }
+
+        })
+
     }
 })();
