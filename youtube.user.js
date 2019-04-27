@@ -108,11 +108,12 @@
     /*** AUTORELOAD ON ERROR ***/
     (async ()=>{
         var video = document.getElementsByClassName("video-stream")[0]
-        await waitFor(()=> video.currentTime > 0, 10*1000);                                        // wait for initialized video
-        if(localStorage.reloading){                                                                // after reloaded, move to saved time if it exists
+        await waitFor(()=> video.currentTime > 0, 10*1000);                                    // wait for initialized video
+        if(localStorage.reloading){                                                            // after reloaded, move to saved time if it exists
+            document.getElementsByClassName('ytp-mute-button')[0].click();                     // unute
             video.pause();
             video.currentTime = localStorage.reloading;
-            localStorage.reloading = '';                                                           // clear
+            localStorage.reloading = '';                                                       // clear
             setTimeout(()=>video.play(),2000);
         }
     })();
@@ -123,6 +124,7 @@
         if( document.querySelectorAll(".ytp-error-content")[0]  ||                             // if 'video error' message or
             video.currentTime == lastTime && ! video.paused && video.currentTime !== 0){       // every 8 seconds check if video is moving when not paused
             localStorage.reloading = video.currentTime;                                        // save current time to move to it after reloading
+            document.getElementsByClassName('ytp-mute-button')[0].click();                     // mute before reloading
             document.location.reload();
         }
         lastTime = video.currentTime;
@@ -416,25 +418,27 @@ setResolution = function(){
 
 
 
-    /*** ADD DATE TO FULLSCREEN TITLE ***/
+    /*** ADD DATE TO FULLSCREEN TITLE, SKIP DEPENDING ON DATE ***/
     // At the moment works with German youtube, and changes it to 'MM/DD/YYY'
     // can set the month and year in the if statement below, and it will skip videos and play only the ones from that month
     var dateTitleSkip = ()=>{
         var uploadDate = document.querySelectorAll('.date')[0].innerHTML.replace('Am ','').replace(' veröffentlicht','').split('.')
         var dateString = ` - ${uploadDate[1]}/${uploadDate[0]}/${uploadDate[2]} `;
-        if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw') && !(uploadDate[2] == '2018' && uploadDate[1] == '02')){
-            clearInterval(dateSkipInter)
-            dateSkipInter = setInterval(dateTitleSkip, 1000)                                     // increase the repetition speed of the interval until date matched
-            if(!document.getElementsByClassName("video-stream")[0].muted)
-                document.getElementsByClassName("ytp-mute-button")[0].click();                  // mute
-            document.getElementsByClassName("ytp-next-button")[0].click()                       // skip
-            return;
-        }
-        else {
-            clearInterval(dateSkipInter)
-            dateSkipInter = setInterval(dateTitleSkip, 3000)                                    // decrease the repetition speed of the interval until next video starts
-            if(document.getElementsByClassName("video-stream")[0].muted)
-                document.getElementsByClassName("ytp-mute-button")[0].click();                  // unmute
+        if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw')){
+            if( !(uploadDate[2] == '2018' && uploadDate[1] == '03')){
+                clearInterval(dateSkipInter)
+                dateSkipInter = setInterval(dateTitleSkip, 1000)                                    // increase the repetition speed of the interval until date matched
+                if(!document.getElementsByClassName("video-stream")[0].muted)
+                    document.getElementsByClassName("ytp-mute-button")[0].click();                  // mute
+                document.getElementsByClassName("ytp-next-button")[0].click()                       // skip
+                return;
+            }
+            else {
+                clearInterval(dateSkipInter)
+                dateSkipInter = setInterval(dateTitleSkip, 3000)                                    // decrease the repetition speed of the interval until next video starts
+                if(document.getElementsByClassName("video-stream")[0].muted)
+                    document.getElementsByClassName("ytp-mute-button")[0].click();                  // unmute
+            }
         }
         if(!document.querySelectorAll('.ytp-title-link')[0].innerHTML.match(dateString)){
             document.querySelectorAll('.ytp-title-link')[0].innerHTML += dateString
