@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Airbnb
 // @namespace    aljgom
-// @version      0.2
+// @version      0.21
 // @description  Moves the calendar to the top of the page to be able to see availability easily
 //               If you add &loadCals=1 to the url, it will load all the links in the 'rooms' array,
 //               and clone their calendars into the main page to have them all in one
@@ -15,14 +15,14 @@
 // @grant        none
 // ==/UserScript==
 
-
 (async function(){
-    await new Promise(resolve=>setTimeout(resolve,1000))  // wait one second, to make sure All Pages loads
     let url = document.location.href;
-    let cal = await waitFor(()=>document.querySelector('[aria-label="Calendar"]'));
-    cal.setAttribute('style', 'position:fixed !important; top:0; left:0');
 
     if(url.match("loadCals=1")){
+        await new Promise(resolve=>setTimeout(resolve,1000))  // wait one second, to make sure All Pages loads
+
+        let cal = await waitFor(()=>document.querySelector('[aria-label="Calendar"]'));
+        cal.setAttribute('style', 'position:fixed !important; top:0; left:0');
         document.title = 'Calendars Airbnb'
         document.querySelector('[role="banner"]').style.display = 'none'
         document.getElementById('site-content').style.display = 'none'
@@ -167,7 +167,8 @@
                     out += "| "
                 }
                 return [out, styles]
-            }))
+            })
+            .catch(()=>['%cerror'+' - '.repeat(300), 'color:gray']))
         }
 
 
