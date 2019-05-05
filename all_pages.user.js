@@ -3,6 +3,7 @@
 // @namespace    aljgom
 // @author       aljgom
 // @description  adds global functions/variables, other scripts depend on these
+// @version      0.2
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -18,6 +19,7 @@ var url = document.location.toString();
 
 // Add forEach to HTMLTableSectionElement, NodeList and HTMLCollection
 HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
+let urlParams = unsafeWindow.urlParams = new URLSearchParams(window.location.search);        // save url parameters in a global variable
 
 
 function gi(id){ return document.getElementById(id); }
@@ -230,3 +232,12 @@ function testElement(name, el, scriptName){
 	if(!el) console.log(`%c${ scriptName }: ${name} selector changed, update script`,'color:orange')
 }
 addFunc(testElement);
+
+
+
+/*** CHANGE TAB TITLE ****/
+(async function(){
+    if(urlParams.get('tabTitle')){
+         document.title = urlParams.get('tabTitle');
+     }
+})()
