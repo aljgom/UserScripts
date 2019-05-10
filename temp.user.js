@@ -224,11 +224,19 @@
     }
 
 
-    //
-    if(url.match("---------------------")){
+    // Scroll ebay
+    if(url.match("https://www.ebay.com/myb/PurchaseHistory")){
         identify();
+        log('temp script: initial scroll')
+        window.scrollTo(0,1350);
     }
 
+
+    //
+    if(url.match("-----------------------")){
+        identify();
+
+    }
 
     //
     if(url.match("-----------------------")){
