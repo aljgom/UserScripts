@@ -19,7 +19,9 @@ var url = document.location.toString();
 
 // Add forEach to HTMLTableSectionElement, NodeList and HTMLCollection
 HTMLTableSectionElement.prototype.forEach = NodeList.prototype.forEach = HTMLCollection.prototype.forEach = Array.prototype.forEach;
-let urlParams = unsafeWindow.urlParams = new URLSearchParams(window.location.search);        // save url parameters in a global variable
+
+// Add url search parameters as a global variable
+let urlParams = unsafeWindow.urlParams = new URLSearchParams( window.location.href.split('?')[1]);
 
 
 function gi(id){ return document.getElementById(id); }
@@ -238,6 +240,6 @@ addFunc(testElement);
 /*** CHANGE TAB TITLE ****/
 (async function(){
     if(urlParams.get('tabTitle')){
-         document.title = urlParams.get('tabTitle');
+        document.title = urlParams.get('tabTitle');
      }
 })()

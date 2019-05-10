@@ -25,6 +25,7 @@
         "log": true,
         "arguments": true,
         "GM_xmlhttpRequest": true,
-        "log___": true
+        "log___": true,
+        "urlParams":true
     }
 }
