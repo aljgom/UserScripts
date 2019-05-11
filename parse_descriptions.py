@@ -75,8 +75,8 @@ def create_table(path):
         output.write('|---|---|\n')
         if path == "./":
             output.write('| [Old Userscripts](old/) | Older Userscripts | \n')
-        # else:
-        #     output.write('| fd[Main Userscripts](/../) | Return to main table | \n')
+        else:
+            output.write('| [Main Userscripts](/../) | Return to main table | \n')
         for file_name in os.listdir(path):
             if "user.js" in file_name:
                 parse_file(path, file_name, output)
