@@ -18,6 +18,7 @@ Quick Preview:
 
 | Name / File | Description / Match |
 |---|---|
+| [Main Userscripts](/../) | Return to main table | 
 | **Buses** <br> [Source Code](https://github.com/aljgom/UserScripts/blob/master/old/buses.user.js "Source Code") [Download/Install](https://aljgom.github.io/UserScripts/old/buses.user.js "Download/Install")| Automatically fills out forms to search for bus tickets <br> _Match:_ <br> ``http://*/*``<br>``https://*/*`` |
 | **Facebook Imgs** <br> [Source Code](https://github.com/aljgom/UserScripts/blob/master/old/facebook_imgs.user.js "Source Code") [Download/Install](https://aljgom.github.io/UserScripts/old/facebook_imgs.user.js "Download/Install")| Removes Images on facebook, temporarily shows them if 'i' is pressed <br> _Match:_ <br> ``https://www.facebook.com/*``<br>``http://www.facebook.com/*`` |
 | **Google Music** <br> [Source Code](https://github.com/aljgom/UserScripts/blob/master/old/google_music.user.js "Source Code") [Download/Install](https://aljgom.github.io/UserScripts/old/google_music.user.js "Download/Install")| Additions to Google Music <br> _Match:_ <br> ``https://play.google.com/music/*`` |
