@@ -133,7 +133,7 @@
         }
         let promises = [];
         let resolved = 0;
-        let loading = () => `<br><br><br><div align="center"> loading ${"＊".repeat(resolved)}${"．".repeat(ids.filter(id=>id>0).length - resolved)} </div>`;
+        let loading = () => (localStorage.previous || '') + `<br><br><br><div align="center"> updating ${"＊".repeat(resolved)}${"．".repeat(ids.filter(id=>id>0).length - resolved)} </div>` ;
         document.body.innerHTML = loading()
         document.body.style.align = "center"
         document.body.style.background = 'black';
@@ -196,6 +196,7 @@
                     .join('')  // for each '%c' create a styled span
                 }</div>`
             }
+            localStorage.previous = document.body.innerHTML
 
         })
 
