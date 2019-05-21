@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Temp Scripts
 // @namespace    aljgom
-// @version      0.1
+// @version      0.2
 // @description  Short/temporary scripts that having a separate page for each seems overkill
 // @author       aljgom
 // @match        http://*/*
@@ -232,10 +232,24 @@
     }
 
 
-    //
-    if(url.match("-----------------------")){
+    // Facebook prompt for reason
+    if(url.match("www.(facebook|instagram).com")){
         identify();
+        let timeSince = date => Date.now() - new Date(date)
 
+        let retypeReason = ()=>{
+            if(GM_getValue('fb_alerted') != undefined && timeSince(GM_getValue('fb_alerted')) > 15*1000){   // avoid alerting multiple times if script runs more than once
+                GM_setValue('fb_alerted', Date.now());
+                while(GM_getValue('reason') != prompt("Retype reason: " + GM_getValue('reason'))){}
+            }
+        }
+        // if no reason, or more than 5 min have passed since last promp
+        if(GM_getValue('fb_prompted') == undefined || GM_getValue('reason') == undefined || GM_getValue('reason').length < 2 || timeSince(GM_getValue('fb_prompted')) > 5*60*1000 ){
+            GM_setValue('fb_prompted', Date.now());
+            GM_setValue('reason', prompt('What are you here for?'));
+        }
+        else retypeReason();
+        setInterval(retypeReason,60*1000);
     }
 
     //
