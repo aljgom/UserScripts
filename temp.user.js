@@ -253,6 +253,25 @@
     }
 
     //
+    if(url.match("https://myactivity.google.com")){
+        identify();
+        if(unsafeWindow.scrollScriptRun) return;
+        unsafeWindow.scrollScriptRun = true;
+        if(confirm('Load more?')){
+            clearInterval(window.scrollInter)
+            scrollInter = setInterval(()=>document.querySelector('#main-content').scrollTop += 100000, 1000)
+            await sleep(30*1000)
+            clearInterval(scrollInter)
+        }
+    }
+
+    //
+    if(url.match("-----------------------")){
+        identify();
+
+    }
+
+    //
     if(url.match("-----------------------")){
         identify();
 
