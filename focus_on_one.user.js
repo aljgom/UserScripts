@@ -21,7 +21,11 @@
     let timeSince = date => Date.now() - new Date(date)
     let url = document.location.href
 
-    if(!GM_getValue('todo')) GM_setValue('todo', prompt('Focus on One: \nEnter url for to-do list'));
+    if(!GM_getValue('todo')) {
+        await sleep(30*1000)
+        GM_setValue('todo', prompt('Focus on One: \nEnter url for to-do list'));
+        return;
+    }
 
     // Compute the edit distance between the two given strings
     function levenshteinDistance(a, b) {
