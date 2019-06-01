@@ -59,7 +59,7 @@
     }
 
     let retypeTask = async ()=>{
-        if(GM_getValue('alerted') == undefined || timeSince(GM_getValue('alerted')) > 15*1000){   // avoid alerting multiple times if script runs more than once
+        if(GM_getValue('alerted') == undefined || timeSince(GM_getValue('alerted')) > 60*1000){   // avoid alerting multiple times if script runs more than once
             GM_setValue('alerted', Date.now());
             await sleep(100)                    // wait for value to save before prompting
             let task = GM_getValue('task')
@@ -94,12 +94,18 @@
         }
     }
 
-    // if no task, or more than 1 min have passed since last promp
-    if(url == GM_getValue('todo') || GM_getValue('prompted') == undefined) { // }|| timeSince(GM_getValue('prompted')) > 5*60*1000 ){
-        await sleep(5000);
+
+    if(GM_getValue('prompted') == undefined) {      // no task
+        await sleep(5*1000)
+        GM_setValue('prompted', Date.now());
+        promptNewTask();
+    }
+    else if(url == GM_getValue('todo')){            // in to do list
+        await sleep(30*1000)
         GM_setValue('prompted', Date.now());
         promptNewTask();
     }
     else retypeTask();
+
     setInterval(retypeTask,5*60*1000);
 })();
