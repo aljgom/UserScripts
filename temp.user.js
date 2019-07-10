@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Temp Scripts
 // @namespace    aljgom
-// @version      0.2
+// @version      0.21
 // @description  Short/temporary scripts that having a separate page for each seems overkill
 // @author       aljgom
 // @match        http://*/*
@@ -224,7 +224,7 @@
     }
 
 
-    // Scroll ebay
+    // SCROLL EBAY
     if(url.match("https://www.ebay.com/myb/PurchaseHistory")){
         identify();
         log('temp script: initial scroll')
@@ -252,7 +252,8 @@
         setInterval(retypeReason,60*1000);
     }
 
-    //
+
+    // GOOGLE HISTORY LOAD MORE
     if(url.match("https://myactivity.google.com")){
         identify();
         if(unsafeWindow.scrollScriptRun) return;
@@ -265,17 +266,53 @@
         }
     }
 
+
+    // STARBUCKS SHIFTS CALENDAR
+    // Print out shifts for a starbucks calendar, also a google search for easy google calendar adding
+    if(url.match("https://starbucks-wfmr.jdadelivers.com/retail/")){
+        identify();
+        Date.prototype.addDays = function(days) {
+        var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+
+        var search ='';
+        var week = new Date();
+        for(let i = 0; i<4; i++) {
+            // starting at the current date, repeat the fetch for 4 upcoming weeks
+            let data = await(await fetch('https://starbucks-wfmr.jdadelivers.com/retail/data/ess/api/MySchedule/2019-01-15?_dc=1562537528388&id='+week.toISOString().slice(0, 10)+'&siteId=1022516')).json();
+            data.Days.forEach(day=>{
+                for(let shift of day.PayScheduledShifts) {
+                    // format time and date, then print them out
+                    let date = shift.Start.split('T')[0].replace('2019-','').replace('-','/');
+                    let start = shift.Start.split('T')[1].split(':')[0]; start=start>12? start-12+'pm' : start+'am';
+                    let end =   shift.End.split('T')  [1].split(':')[0]; end  =end  >12? end  -12+'pm' : end  +'am';
+                    console.log(`${date} ${start}-${end}`)
+                    // create a search term that would add the event to Google Calendar when openened
+                    search += `window.open("https://www.google.com/search?q=add to calendar Starbucks ${date} ${start}-${end}"); \n`
+                }
+            })
+            week = week.addDays(7);
+        }
+        console.log(search);                                                     // print out google searches, can be just copied and run
+
+    }
+
+
     //
     if(url.match("-----------------------")){
         identify();
 
     }
 
+
     //
     if(url.match("-----------------------")){
         identify();
 
     }
+
 
     //
     if(url.match("-----------------------")){
