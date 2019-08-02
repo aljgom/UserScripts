@@ -144,7 +144,7 @@
                 promises.push(['%c','']) // push empty, with empty style, new line is added later to it
                 continue;
             }
-            promises.push(fetch(`https://www.airbnb.com/api/v2/calendar_months?_format=with_conditions&count=4&currency=USD&key=d306zoyjsyarp7ifhu67rjxn52tv0t20&listing_id=${id}&locale=en&month=7&year=2019`)
+            promises.push(fetch(`https://www.airbnb.com/api/v2/calendar_months?_format=with_conditions&count=4&currency=USD&key=d306zoyjsyarp7ifhu67rjxn52tv0t20&listing_id=${id}&locale=en&month=${(new Date).getMonth()+1}&year=2019`)
             .then(response => response.json())
             .then(async function(json) {
                 // JSON.stringify(json, null, 2);
