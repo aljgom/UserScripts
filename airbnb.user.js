@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Airbnb
 // @namespace    aljgom
-// @version      0.22
+// @version      0.221
 // @description  Moves the calendar to the top of the page to be able to see availability easily
 //               If you add &loadCals=1 to the url, it will load all the links in the 'rooms' array,
 //               and clone their calendars into the main page to have them all in one
@@ -123,7 +123,14 @@
         30110320,
         30110843,
         30111035,
-        30111263]
+        30111263,
+        0,
+        0,
+        0,
+        24633990,
+        26282060,
+        24610101
+    ]
 
         let log = console.log.bind(console);
         let isToday = function(date){
