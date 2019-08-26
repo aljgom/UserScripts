@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Google Keep
 // @namespace    aljgom
-// @version      0.1
+// @version      0.11
 // @description  Additional functionality and UI changes for Google Keep
 // @match        https://keep.google.com/*
 // @author       aljgom
@@ -25,7 +25,7 @@
             document.title = document.getElementsByClassName('gk6SMd')[0].innerText;
             return;
         }
-        var titles = document.querySelectorAll('[aria-label=Title]')
+        var titles = document.getElementsByClassName('IZ65Hb-YPqjbf fmcmS-x3Eknd r4nke-YPqjbf')
         if(titles.length == 0) titles = document.querySelectorAll('[aria-label=Titel]') // Try it in German
         document.title = titles[titles.length-1].innerHTML          // Change the tab title to the name of the current List/Note
     },2000);
