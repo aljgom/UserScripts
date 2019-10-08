@@ -14,6 +14,7 @@
 //               Get rid of recommendations
 //               Add Date to fullscren title, skip videos depening on date
 //               Keyboard speed control
+//               Add Playlist name to Tab Title
 // @author       aljgom
 // @match        http://www.youtube.com/watch*
 // @match        https://www.youtube.com/watch*
@@ -26,20 +27,34 @@
 // ==/UserScript==
 
 
-// uses waitFor from AllPages script, make sure it runs before this.
 
 (async ()=>{
-    // why is this part run? breaks ycapi download cuz never matches url
-    /*
-    while( ! document.location.toString().match(/watch|embed/) ){
-		log('youtube script: waiting for url match');
-		await sleep(2000);
-	}
-*/
-
+    // uses waitFor from AllPages script, make sure it runs before this.
+    while(typeof(waitFor) === "undefined"){
+        console.log('waiting for All Pages')
+        await new Promise(resolve=>setInterval(resolve, 200))
+    }
 
     HTMLCollection.prototype.forEach = Array.prototype.forEach;
     var debug =  ()=>{};  // debug = function(){console.log(...arguments);};
+
+
+    /** ADD PLAYLIST TITLE TO TAB TITLE **/
+    (async function playlistTabTitle(){
+        if(document.location.href.match('[&?]list=')){
+            // this title selector has size 2 when it's a playlist and size 1 when it isn't
+            // await waitFor(()=>document.getElementsByClassName('title style-scope ytd-playlist-panel-renderer').length > 1)
+            let savedTitle = ''
+            setInterval(async function(){
+                if(savedTitle != document.title){       // chech if tab title has changed
+                    let playlistTitle = document.getElementsByClassName('title style-scope ytd-playlist-panel-renderer')[0].innerText
+                    document.title = playlistTitle + " - " + document.title;
+                    savedTitle = document.title;
+                }
+            },20*1000)  // title gets replaced after a while, just using a wait to fix it for now, also good if it only shows video title first, and after a while changes it to Playlist title + vid Title. Title changes also if notification count changes
+
+        }
+    })();
 
 
     /** LOOP AND REVERSE PLAYLIST **/
