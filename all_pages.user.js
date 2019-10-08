@@ -227,11 +227,17 @@ function doneClicking(){
 
 
 
-/* Used for testing if the selection of and element hasn't changed
+/* Used for testing if the selection of an element hasn't changed
  * Tests if the passed element exists, if not consoles.logs error message
  */
-function testElement(name, el, scriptName){
-	if(!el) console.log(`%c${ scriptName }: ${name} selector changed, update script`,'color:orange')
+
+function testElement(elName, el){
+    if(!testElement.scriptWindow){
+        // use another script's window instead of this one to print out that name
+        console.log(`%cNo scriptWindow set for testElement. Use testElement.scriptWindow = window`,'color:orange');
+        return;
+    }
+	if(!el) console.log(`%c${ testElement.scriptWindow.GM_info.script.name }: ${elName} selector changed, update script`,'color:orange');
 }
 addFunc(testElement);
 
