@@ -83,9 +83,21 @@ function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms));    
 addFunc(sleep);
 
 
+
 /* Runs fileChangeHandler if the modification date changes for the specified file located at url
  * returns the interval number, so we can clear the monitoring using clearInterval
  * Returns a promise of the response of the request
+
+ Usage:
+
+ python -m http.server
+
+ clearInterval(window.inter);
+ inter = monitorFileChange('http://localhost:8000/file',
+     function fileChangeHandler(){
+		log('file changed')
+	})
+
  */
 function monitorFileChange(url, fileChangeHandler){
     var requestHead = url=> new Promise(resolve=>{
@@ -109,18 +121,10 @@ function monitorFileChange(url, fileChangeHandler){
 }
 addFunc(monitorFileChange);
 
-/*
-Usage:
-
-python -m http.server
-
-clearInterval(window.inter);
-inter = monitorFileChange('http://localhost:8000/file',
-    function fileChangeHandler(){
-		log('file changed')
-	})
-
-*/
+function liveReload(fileName){       // using atom plugin live server
+    monitorFileChange('http://localhost:3000/'+fileName, ()=>location.reload());
+}
+addFunc(liveReload);
 
 
 
@@ -247,7 +251,6 @@ function testElement(elName, el){
 	if(!el) console.log(`%c${ testElement.scriptWindow.GM_info.script.name }: ${elName} selector changed, update script`,'color:orange');
 }
 addFunc(testElement);
-
 
 
 /*** CHANGE TAB TITLE ****/
