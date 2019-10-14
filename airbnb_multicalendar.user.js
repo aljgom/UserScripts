@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Airbnb Multicalendar
 // @namespace    aljgom
-// @version      0.121
+// @version      0.13
 // @description  Adds guest photos to the bookings in the multicalendar
-//               Changes the background color of bookings that include today. Creates a set with all the guests for the current day
+//               Changes the background color of bookings that include today, to show check outs, check ins, and current guests. Creates a set with all the guests for the current day
 // @author       aljgom
 // @match        https://www.airbnb.com/multicalendar
 // @grant        none
@@ -46,12 +46,14 @@
             checkout = new Date(checkout +' '+ (1900+ today.getYear()))
             //checkout.setDate(checkout.getDate()+1);
             let guest = document.querySelectorAll('._n5lh69r ._1p3joamp')[0]
-            // get guest photo, clone it, style it
+            // get guest photo, clone it, style it, and insert it into the booking
             let photo = document.querySelectorAll('._e296pg>img')[0]
             let photo2 = photo.cloneNode(true);
-            photo2.setAttribute('style', 'display:inline !important');
-            photo2.style.height = photo2.style.width = "25px"
-            booking.children[1].append(photo2)
+            booking.setAttribute('style', booking.getAttribute('style') + ' padding: 0 !important') // add !important padding to booking
+            photo2.setAttribute('style', 'display:inline !important; margin: 0 1px');
+            photo2.style.height = photo2.style.width = "24px"
+            booking.children[0].insertBefore(photo2, booking.children[0].children[0])
+            booking.children[1].append(photo2.cloneNode(true))
             // log if it's one of today's bookings
             if(checkin <= today && today <= checkout ){
                 if(!guests.has(guest.innerText)){       // can be 2 bookings same guest, but add it to the cointainer only once
@@ -61,7 +63,7 @@
                 guests.add(guest.innerText)
                 // log(booking)
                 // color bookings for today, highlight checkins and checkouts
-                booking.style.backgroundColor = checkin.valueOf() == today.valueOf() ? 'DarkViolet' : checkout.valueOf() == today.valueOf() ? 'DarkOrange' : 'gray';
+                booking.style.backgroundColor = checkin.valueOf() == today.valueOf() ? 'DarkViolet' : checkout.valueOf() == today.valueOf() ? 'DarkOrange' : 'RoyalBlue  ';
                 //log(checkin, checkout)
             }
             await sleep(50);
