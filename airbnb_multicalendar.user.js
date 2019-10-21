@@ -18,6 +18,7 @@
     //liveReload('airbnb_multicalendar.user.js')
     document.body.style.zoom = .8
 
+    let sendMessage = false;
     let guests = new Set()
     let container = document.createElement('div');
     let bookings = await waitFor(()=>document.getElementsByClassName('_1vd7r9f'))
@@ -64,7 +65,10 @@
                 // log(booking)
                 // color bookings for today, highlight checkins and checkouts
                 booking.style.backgroundColor = checkin.valueOf() == today.valueOf() ? 'DarkViolet' : checkout.valueOf() == today.valueOf() ? 'DarkOrange' : 'RoyalBlue  ';
-                //log(checkin, checkout)
+
+				if(sendMessage && checkout.valueOf() != today.valueOf()) {		// current guest, not checking out today
+					Array.from(document.querySelectorAll('._12jvhwr')).filter(el=>el.innerText.match('Message'))[0].click();
+                }
             }
             await sleep(50);
         }
@@ -82,4 +86,26 @@
         processBeds(bookings);
     }
     setInterval(check_beds,2000);
+
+    if(sendMessage){
+        let ids = [34156181,
+                34156617,
+                34156946,
+                34157105,
+                34157217,
+                34157335,
+                0,
+                31243489,
+                31243767,
+                31144603,
+                31145170,
+                31145452,
+                31145653,
+                0,
+                30110320,
+                30110843,
+                30111035,
+                30111263]
+        ids.forEach(id=>window.open('https://www.airbnb.com/manage-your-space/'+id+'/details/guest-resources'))
+    }
 })();
