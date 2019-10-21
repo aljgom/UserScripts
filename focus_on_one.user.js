@@ -3,7 +3,7 @@
 // @namespace    aljgom
 // @author       aljgom
 // @description  Prompts for what is the highest priority task, every 5 minutes asks to retype it, or enter a new one by writing 'new' in the prompt
-// @version      0.11
+// @version      0.12
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -70,17 +70,23 @@
             if(['new', undefined, null].includes(task) || task.length < 2){
                 promptNewTask();
             }
-            else{
-                while(document.hasFocus()){
+            else if(document.hasFocus()){
+                while(true){
                     log('Focus on one: looping')
-                    task = prompt("Retype highest priority task: " + GM_getValue('task'));
+                    task = prompt("Retype highest priority task");
                     if(task == 'new'){
                         promptNewTask();
                         break
                     }
                     await sleep(100)
                     if(!task) continue;
-                    if(levenshteinDistance(GM_getValue('task'), task) <= 2) break    // allow some typos
+                    if(levenshteinDistance(GM_getValue('task'), task) < task.length/4+1){   // allow some typos
+                        break
+                    }
+                    else{
+                        if(confirm("Task didn't match. Retry? ('cancel' to reveal)")) continue
+                        else alert(GM_getValue('task'));
+                    }
                 }
             }
         }
