@@ -1,8 +1,10 @@
 // ==UserScript==
 // @name         Pomodoro
 // @namespace    aljgom
-// @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages
-//               If the modal is clicked, it will dissapear briefly, it will also open a google keep TO-DO list
+// @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages, and open another window to focus on during that time (eg. to-do list)
+//               If the modal is clicked, it will dissapear briefly, it will also focus on the other window
+//               Keeps track if the browser has been active to skip the next break if there hasn't been activity
+// @version      0.15
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -14,6 +16,7 @@
 function Pomo(){
     var url = document.location.href;
     if(document.getElementById('pomo_modal')) return;
+
     /* Whitelist */
     // URL patterns can be also be added in the 'whitelist' array in the Script Storage tab
     // if matched, the script won't run on it
@@ -136,18 +139,49 @@ function Pomo(){
         document.body.style.overflow = self.bodyOverflow;
     }
 
+    self.checkSkip = ()=>{
+        if(GM_getValue('pomo_skip')) {
+           setTimeout(()=>GM_setValue('pomo_skip', false), 5*60*1000);          // set skip to false after this break is done (so it remains false for other windows)
+            return true;
+        }
+        return false;
+    }
+
+    self.setSkip = ()=>{
+        let inactiveTime = Date.now() - new Date(GM_getValue('pomo_lastActive'))
+        if(inactiveTime > 10*60*1000){                      // if there's been inactive time within last 15 minutes of a work cycle, set the skip variable
+            let curr_mins = new Date().getMinutes();
+            let curr_secs = new Date().getSeconds()
+            // calculate seconds until :30 or :00
+            let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
+
+            if(secs <= 20*60 && secs > 5*60)
+                GM_setValue('pomo_skip', true)
+        }
+    }
+
+    self.saveLastActive = ()=>{                      // keep track of browser activity
+        //console.log('saved lastActive')
+        self.setSkip();
+        GM_setValue('pomo_lastActive', Date.now())
+    }
+
+    self.saveLastActive()
+    window.addEventListener('focus', self.saveLastActive)
 
     // check if modal should be started
     // TODO change interval to do one check, calculate remainig time, and start another interval using that
     setInterval(()=>{
         if(self.modalStarted) return;
-        var curr_mins = new Date().getMinutes();
-        var curr_secs = new Date().getSeconds()
+        let curr_mins = new Date().getMinutes();
+        let curr_secs = new Date().getSeconds()
 
         // calculate seconds until :30 or :00
-        var secs = (30 - curr_mins %30 - 1)*60 + (60 - curr_secs );
-        if(secs <= 5*60) self.startModal(secs);
+        let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
+        if(secs <= 5*60 && !self.checkSkip()) self.startModal(secs);
     },1000);
+
+
 }
 
 
