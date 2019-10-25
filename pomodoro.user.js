@@ -4,7 +4,7 @@
 // @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages, and open another window to focus on during that time (eg. to-do list)
 //               If the modal is clicked, it will dissapear briefly, it will also focus on the other window
 //               Keeps track if the browser has been active to skip the next break if there hasn't been activity
-// @version      0.15
+// @version      0.151
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -139,9 +139,17 @@ function Pomo(){
         document.body.style.overflow = self.bodyOverflow;
     }
 
+    /* Check the script storage variable shared across windows to see if we should skip the break.
+        It also sets a timeout to reset that variable after the break, and makes sure the timeout is set only once even if the function is called many times
+    */
     self.checkSkip = ()=>{
         if(GM_getValue('pomo_skip')) {
-           setTimeout(()=>GM_setValue('pomo_skip', false), 5*60*1000);          // set skip to false after this break is done (so it remains false for other windows)
+            if(self.skipping) return true;      // use this flag to set the timeout only once
+            self.skipping = true;
+            setTimeout(()=>{                    // set skip to false after this break is done (so it remains false for other windows)
+                self.skipping = false;
+                GM_setValue('pomo_skip', false)
+            }, 5*60*1000);
             return true;
         }
         return false;
@@ -155,8 +163,11 @@ function Pomo(){
             // calculate seconds until :30 or :00
             let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
 
-            if(secs <= 20*60 && secs > 5*60)
+            if(secs <= 20*60 && secs > 5*60){
                 GM_setValue('pomo_skip', true)
+                alert('pomo: set skip to true')
+            }
+
         }
     }
 
