@@ -40,5 +40,5 @@ setInterval(checkSkip,1000)
 Now the problem is that we don't want to skip the next break if the inactivity has been due to the current break. A simple solution to that is to only do the 'inactiveTime' check if we're in the 'work' cycle. The times I will use is:
 
 long inactive time: greater than 10 minutes
-set the 'skip' flag only in the inactive time has been within the last 15 minutes of each work cycle, meaning
-(10 < minutes < 25) or (40 < minutes < 55)
+set the 'skip' flag only if the inactive time has been within the last 10 minutes of each work cycle, meaning
+(15 < minutes < 25) or (45 < minutes < 55)

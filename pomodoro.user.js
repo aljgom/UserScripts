@@ -4,7 +4,7 @@
 // @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages, and open another window to focus on during that time (eg. to-do list)
 //               If the modal is clicked, it will dissapear briefly, it will also focus on the other window
 //               Keeps track if the browser has been active to skip the next break if there hasn't been activity
-// @version      0.151
+// @version      0.152
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -157,15 +157,15 @@ function Pomo(){
 
     self.setSkip = ()=>{
         let inactiveTime = Date.now() - new Date(GM_getValue('pomo_lastActive'))
-        if(inactiveTime > 10*60*1000){                      // if there's been inactive time within last 15 minutes of a work cycle, set the skip variable
+        if(inactiveTime > 10*60*1000){
             let curr_mins = new Date().getMinutes();
             let curr_secs = new Date().getSeconds()
             // calculate seconds until :30 or :00
             let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
 
-            if(secs <= 20*60 && secs > 5*60){
+            if(secs <= 15*60 && secs > 5*60){               // if it's within last 10 minutes of a work cycle (15 minutes until 0 or 30), but not in the break
                 GM_setValue('pomo_skip', true)
-                alert('pomo: set skip to true')
+                alert('Pomo: Skipping next break block')
             }
 
         }
