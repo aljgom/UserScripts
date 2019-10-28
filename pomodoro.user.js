@@ -4,7 +4,7 @@
 // @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages, and open another window to focus on during that time (eg. to-do list)
 //               If the modal is clicked, it will dissapear briefly, it will also focus on the other window
 //               Keeps track if the browser has been active to skip the next break if there hasn't been activity
-// @version      0.152
+// @version      0.16
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
@@ -72,6 +72,7 @@ function Pomo(){
             }
         }
     };
+
     setInterval(self.insertModal,5000);
     self.insertModal();
 
@@ -84,21 +85,16 @@ function Pomo(){
         else self.nw = open(todo)
     }
 
-
-
-    self.startTimer = function(secs){
-        var inter = setInterval((function f(){
-            secs -= 1;
-            var minutes = parseInt(secs / 60, 10)
-            var seconds = parseInt(secs % 60, 10);
-
+    self.startTimer = async function(){
+        while((self.secs -= 1) >= 0 && self.secs < 5*60 ){        // when focusing the window and recalculating secs, 0 could have passed and secs gets set back to a high value
+            let minutes = parseInt(self.secs / 60, 10)
+            let seconds = parseInt(self.secs % 60, 10);
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
-
             self.timer.innerHTML = minutes + ":" + seconds;
-            return f;
-        })(),1000);
-        setTimeout(clearInterval, secs*1000, inter);
+            await sleep(1000)
+        }
+        self.stopModal();
     }
 
     self.beep = ()=>{
@@ -117,7 +113,7 @@ function Pomo(){
         self.modal.style.opacity = 1;
     }
 
-    self.startModal = async (secs)=>{
+    self.startModal = async ()=>{
 		self.modalStarted = true;
         if(document.hasFocus()){                        // beep 15 seconds before blocking page
             // self.beep(); await sleep(300); self.beep();
@@ -127,9 +123,8 @@ function Pomo(){
             await sleep(15*1000)
         }
         self.modal.style.display = 'block';
-        setTimeout(self.stopModal, secs*1000);
-        self.startTimer(secs);
         document.body.style.overflow = 'hidden';        // prevent body from scrolling
+        self.startTimer();
         if(document.hasFocus()) self.openTodoList();
     };
 
@@ -158,12 +153,8 @@ function Pomo(){
     self.setSkip = ()=>{
         let inactiveTime = Date.now() - new Date(GM_getValue('pomo_lastActive'))
         if(inactiveTime > 10*60*1000){
-            let curr_mins = new Date().getMinutes();
-            let curr_secs = new Date().getSeconds()
-            // calculate seconds until :30 or :00
-            let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
-
-            if(secs <= 15*60 && secs > 5*60){               // if it's within last 10 minutes of a work cycle (15 minutes until 0 or 30), but not in the break
+            self.calculateSecs();
+            if(self.secs <= 15*60 && self.secs > 5*60){               // if it's within last 10 minutes of a work cycle (15 minutes until 0 or 30), but not in the break
                 GM_setValue('pomo_skip', true)
                 alert('Pomo: Skipping next break block')
             }
@@ -177,19 +168,28 @@ function Pomo(){
         GM_setValue('pomo_lastActive', Date.now())
     }
 
+
+
+    // calculate seconds until :30 or :00
+    self.calculateSecs = ()=>{
+        let curr_mins = new Date().getMinutes();
+        let curr_secs = new Date().getSeconds()
+        self.secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
+    }
+
+    self.secs = 0
+    window.addEventListener('focus', self.calculateSecs) // recalculate when focused to set the time again because the intervals start lagging when not in focus
+
     self.saveLastActive()
     window.addEventListener('focus', self.saveLastActive)
 
     // check if modal should be started
     // TODO change interval to do one check, calculate remainig time, and start another interval using that
+
     setInterval(()=>{
         if(self.modalStarted) return;
-        let curr_mins = new Date().getMinutes();
-        let curr_secs = new Date().getSeconds()
-
-        // calculate seconds until :30 or :00
-        let secs = (30 - curr_mins % 30 - 1)*60 + (60 - curr_secs );
-        if(secs <= 5*60 && !self.checkSkip()) self.startModal(secs);
+        self.calculateSecs();
+        if(self.secs <= 5*60 && !self.checkSkip()) self.startModal();
     },1000);
 
 
