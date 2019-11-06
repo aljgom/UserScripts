@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube
 // @namespace    aljgom
-// @version      0.1
+// @version      0.2
 // @description  Various modifications:
 //               Loop and reverse playlist
 //               Autoreload on error
@@ -23,6 +23,9 @@
 // @match        https://www.youtube.com/embed*
 // @match        https://ycapi.org/*
 // @grant        unsafewindow
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_deleteValue
 // @grant        window.close
 // ==/UserScript==
 
@@ -120,30 +123,90 @@
 
 
 
-    /*** AUTORELOAD ON ERROR ***/
-    (async ()=>{
-        var video = document.getElementsByClassName("video-stream")[0]
-        await waitFor(()=> video.currentTime > 0, 10*1000);                                    // wait for initialized video
-        if(localStorage.reloading){                                                            // after reloaded, move to saved time if it exists
-            document.getElementsByClassName('ytp-mute-button')[0].click();                     // unute
-            video.pause();
-            video.currentTime = localStorage.reloading;
-            localStorage.reloading = '';                                                       // clear
-            setTimeout(()=>video.play(),2000);
+    /*** AUTORELOAD ON ERROR
+    ***/
+    (async function autoReload(){
+        (async function moveToSavedTime(){
+            let video = document.getElementsByClassName("video-stream")[0];
+            await sleep(1000);
+            await waitFor(()=> video.currentTime > 0, 10*1000);                                         // wait for initialized video
+            if(GM_getValue('reloading')){                                                               // after reloaded, move to saved time if it exists
+                document.getElementsByClassName('ytp-mute-button')[0].click();                          // unmute
+                video.pause();
+                video.currentTime = GM_getValue('reloading');
+                GM_setValue('reloading','');                                                            // clear
+                setTimeout(()=>video.play(),2000);
+            }
+        })();
+
+        let lastTime = 0;
+        let getReloadTries = ()=> GM_getValue('reloadTries') ? parseInt(GM_getValue('reloadTries')) : 0;   // can be shared across other tabs
+
+        async function checkForError(){
+            checkForError.count = checkForError.count ? checkForError.count + 1 : 1;                    // keep counter of function calls
+            let reloadTries = getReloadTries();
+            // log___('reloadTries ', reloadTries,  (reloadTries - (checkForError.count % reloadTries)) % reloadTries)
+            // log___('reloading', await GM_getValue('reloading'));
+            if(await GM_getValue('reloading')) return;                                                  // don't reload if reloading process hasn't finished, or if another window is reloading
+			if(reloadTries > 0 && checkForError.count % reloadTries != 0) return;                       // if it keeps retrying, increase the wait time between checks
+
+            var video = document.getElementsByClassName("video-stream")[0];
+            if( document.querySelectorAll(".ytp-error-content")[0]  ||          // if 'video error' message or video not paused and time hasn't changed
+                video.currentTime == lastTime && ! video.paused && video.currentTime !== 0
+            ){
+                GM_setValue('reloading', video.currentTime);                                            // save current time to move to it after reloading
+                GM_setValue('reloadTries',reloadTries+=1)
+                document.getElementsByClassName('ytp-mute-button')[0].click();                          // mute before reloading
+                document.location.reload();
+                return;
+            }
+            if(checkForError.count / reloadTries == 1) decreaseReloadTries();                           // if it loaded without errors, decrease reloadTries (only the first time checking erros passes)
+            lastTime = video.currentTime;
         }
+
+        function decreaseReloadTries(){
+            let reloadTries = getReloadTries();
+            GM_setValue('reloadTries', reloadTries = Math.max(0, reloadTries-1));
+        }
+
+        setInterval(checkForError, 8*1000);                                                             // every 8 seconds check if the video is moving when not paused
+
+        /* since we're reloading videos only one by one, there shouldn't be a need to pause others, so ignore this part */
+        async function checkReloading(){                                                                // pause if other tabs are reloading. Videos sometimes crash when other videos load, it can be help avoid it if they're paused
+            let video = document.getElementsByClassName("video-stream")[0];
+
+                // not paused by thispause by this
+                //  process of reloading
+                // wasn't paused
+                // window vissible
+                if( GM_getValue('reloading') //&&
+                //    !video.paused && document.visibilityState == "visible"  // only pause visible videos, non-visible should not use as much cpu and they the browser might not start replaying them again if not visible
+                ){
+                    video.pause();
+                    checkReloading.paused = true;
+                }
+                else if(checkReloading.paused){
+                    await sleep(5000)
+                    video.play();
+                    checkReloading.paused = false;
+                }
+
+                if( document.visibilityState == "visible" ){
+                    if(checkReloading.paused && !GM_getValue('reloading')){
+                        await sleep(5000)
+                        video.play();
+                        checkReloading.paused = false;
+                    }
+                }
+        }
+
+
+    //    setInterval(checkReloading, 2000);
+
+
+
     })();
 
-    var lastTime = 0;
-    setInterval(()=>{
-        var video = document.getElementsByClassName("video-stream")[0];
-        if( document.querySelectorAll(".ytp-error-content")[0]  ||                             // if 'video error' message or
-            video.currentTime == lastTime && ! video.paused && video.currentTime !== 0){       // every 8 seconds check if video is moving when not paused
-            localStorage.reloading = video.currentTime;                                        // save current time to move to it after reloading
-            document.getElementsByClassName('ytp-mute-button')[0].click();                     // mute before reloading
-            document.location.reload();
-        }
-        lastTime = video.currentTime;
-    }, 8*1000);
 
 
 
@@ -436,7 +499,11 @@ setResolution = function(){
     /*** ADD DATE TO FULLSCREEN TITLE, SKIP DEPENDING ON DATE ***/
     // At the moment works with German youtube, and changes it to 'MM/DD/YYY'
     // can set the month and year in the if statement below, and it will skip videos and play only the ones from that month
-    var dateTitleSkip = ()=>{
+    var dateTitleSkip = async function dateTitleSkip(){
+        if(!document.querySelectorAll('.date')[0]){
+            log('waiting for video date');
+            return;
+        }
         var uploadDate = document.querySelectorAll('.date')[0].innerHTML.replace('Am ','').replace(' veröffentlicht','').split('.')
         var dateString = ` - ${uploadDate[1]}/${uploadDate[0]}/${uploadDate[2]} `;
         if(window.location.href.match('PLJaq64dKJZoqEYa7L0MSUtM5F8lzryMgw')){
