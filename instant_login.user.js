@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Instant Login
 // @namespace    aljgom
-// @version      0.11
+// @version      0.12
 // @description  Automates login forms to log in automatically to pages.
 //               I use it in conjunction with a password manager (LastPass),
 //               and it clicks log in buttons after LastPass fills up the required fields
@@ -16,6 +16,11 @@
 // ==/UserScript==
 
 (async ()=>{
+    while(typeof(waitFor) === "undefined"){
+        console.log('waiting for All Pages')
+        await new Promise(resolve=>setInterval(resolve, 200))
+    }
+    
     function gi(id){ return document.getElementById(id); }
     function gc(cl){ return document.getElementsByClassName(cl); }
     let sleep = ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -194,6 +199,8 @@
                                                                 redirect("https://www.mint.com/",  "https://mint.intuit.com/bills.event");
 /*** MINT ***/                                                  redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
     if( url                                                     .match("accounts.intuit.com/index.html")){
+        (await waitFor(()=>gi('ius-userid'))).value = getStorageValue('id');
+        gi('ius-password').value = getStorageValue('password');
         loginWhenFieldSet(await waitFor(()=>gi('ius-password')), gi("ius-sign-in-submit-btn") );        //  });
     }
 
@@ -231,10 +238,12 @@
     }
 
 
-                                                                redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");        // timed out page
-/*** PENFED ***/                                                redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
+                                                                loginPage = "https://www.penfed.org/login/";
+                                                                redirectMatch("penfed.org/home",loginPage);
+                                                                redirectMatch("https://www.penfed.org/logoff/", loginPage);
+/*** PENFED ***/                                                redirect("https://www.penfed.org/",             loginPage);
     // username
-    if(url                                                      == "https://www.penfed.org/login/"){
+    if(url                                                      == loginPage){
         let user_field = await waitFor(()=>gi("mlloginusernameinput"));
         user_field.value = getStorageValue('username');
         gi('login-user-ml-login').click();
@@ -305,6 +314,7 @@
     }
 
 
+
 /*** TRENDNET ROUTER ***/
     if( url                                                     .match("http://192.168.10.1/login.asp") )  {
         let user_field = await waitFor(()=>gi("UserName"));
@@ -333,6 +343,16 @@
     }
 
 
+
+/*** US BANK ***/
+        if(url                                                      .match("https://www.usbank.com/index.html") ||
+            url                                                     .match("https://onlinebanking.usbank.com/Auth/Login")
+        ){
+            loginWhenFieldSet(await waitFor(()=>gi("aw-password")), gi("aw-log-in") );
+        }
+
+
+
 /*** WALLETHUB ***/                                             redirect("https://wallethub.com/", "https://wallethub.com/home/dashboard");
     if(url                                                      .match("https://wallethub.com/join/login")){
         console.log("InstantLogin: can't get it to click the submit button")
@@ -343,6 +363,14 @@
         // document.querySelectorAll("[name='$form']")[0].submit()
     }
 
+
+                                                                loginPage = 'https://www.wellsfargo.com/'
+                                                                redirectMatch("https://connect.secure.wellsfargo.com/auth/secureLogout", loginPage);
+                                                                redirectMatch("https://connect.secure.wellsfargo.com/auth/login/", loginPage);
+/*** WELLS FARGO ***/                                           redirectMatch("https://connect.secure.wellsfargo.com/auth/logout/", loginPage);
+    if(url                                                      .match(loginPage)){
+        loginWhenFieldSet(await waitFor(()=>gi("password")), gi("btnSignon") );
+    }
 
 
 
