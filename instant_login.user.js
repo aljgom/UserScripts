@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Instant Login
 // @namespace    aljgom
-// @version      0.1
+// @version      0.11
 // @description  Automates login forms to log in automatically to pages.
 //               I use it in conjunction with a password manager (LastPass),
 //               and it clicks log in buttons after LastPass fills up the required fields
@@ -66,6 +66,7 @@
      * redirect to 'other' url if wer're in 'check' url
      */
     function redirect(check, other){ if( url == check) setTimeout(()=> document.location = other, 300); }
+    function redirectMatch(check, other){ if( url.match(check)) setTimeout(()=> document.location = other, 300); }
 
     /**
      * Store usernames and passwords if needed into Script storage.
@@ -105,8 +106,8 @@
     }
 
                                                                 var loginPage = 'https://www.barclaycardus.com/servicing/home?secureLogin='
-                                                                if(url.match('https://www.barclaycardus.com/servicing/timeout')) document.location = loginPage;
-/*** BARCLAYCARD ***/                                             redirect("https://cards.barclaycardus.com/", loginPage);
+                                                                redirectMatch('https://www.barclaycardus.com/servicing/timeout', loginPage);
+/*** BARCLAYCARD ***/                                           redirect("https://cards.barclaycardus.com/", loginPage);
     if( url                                                     .match("https://www.barclaycardus.com/servicing/authenticate") || url.match("https://www.barclaycardus.com/servicing/home") ){
         loginWhenFieldSet( await waitFor(()=>gi('password')), gi("loginButton") );
     }
@@ -120,7 +121,7 @@
     }
 
                                                                 redirect("https://www.capitalone.com/sign-out/?service=e", "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
-/*** CAPITAL ONE ***/                                            redirect("https://www.capitalone.com/",                    "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
+/*** CAPITAL ONE ***/                                           redirect("https://www.capitalone.com/",                    "https://verified.capitalone.com/sic-ui/#/esignin?Product=Card");
     if( url                                                     .match("https://verified.capitalone.com/sic-ui/#/esignin")){
         loginWhenFieldSet(await waitFor(()=>gi('password')), gi("id-signin-submit") ); }
     if( url                                                     .match("https://verified.capitalone.com/challenge.html") ){
@@ -152,7 +153,7 @@
                                                                 loginPage = 'https://portal.discover.com/customersvcs/universalLogin/ac_main'
                                                                 redirect("https://www.discover.com/", loginPage);
                                                                 redirect("https://portal.discover.com/customersvcs/universalLogin/logoff_confirmed" ,  loginPage);
-/*** DISCOVER ***/                                               redirect("https://portal.discover.com/customersvcs/universalLogin/timeout_confirmed",  loginPage);
+/*** DISCOVER ***/                                              redirect("https://portal.discover.com/customersvcs/universalLogin/timeout_confirmed",  loginPage);
     if( url                                                     == loginPage){
         loginWhenFieldSet( await waitFor(()=>gi("password-content")),gc("log-in-button")[1]);
     }
@@ -170,9 +171,10 @@
     }
 
 
-/*** FREEDOMPOP ***/                                              redirect("https://www.freedompop.com/", "https://www.freedompop.com/login.htm");
+/*** FREEDOMPOP ***/                                            redirect("https://www.freedompop.com/", "https://www.freedompop.com/login.htm");
     if( url                                                     == "https://www.freedompop.com/login.htm"  ||
-        url                                                     .match( "https://support.freedompop.com/app/utils/login_form" ) ){
+        url                                                     .match( "https://support.freedompop.com/app/utils/login_form" )
+    ){
         var pw = await waitFor(()=>document.getElementsByName("signin-password-full")[0]);
         var user = document.getElementsByName("signin-username-full")[0]
         pw.value = getStorageValue('password');
@@ -190,7 +192,7 @@
 
 
                                                                 redirect("https://www.mint.com/",  "https://mint.intuit.com/bills.event");
-/*** MINT ***/                                                   redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
+/*** MINT ***/                                                  redirect("https://play.google.com/store/apps/details?id=com.mint",  "https://mint.intuit.com/bills.event");  // from google play app page
     if( url                                                     .match("accounts.intuit.com/index.html")){
         loginWhenFieldSet(await waitFor(()=>gi('ius-password')), gi("ius-sign-in-submit-btn") );        //  });
     }
@@ -201,10 +203,11 @@
 
                                                                 redirect("https://www.paypal.com/","https://www.paypal.com/signin");
                                                                 redirect("https://www.paypal.com/home","https://www.paypal.com/signin");
-/*** PAYPAL ***/                                                  redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
+/*** PAYPAL ***/                                                redirect("https://www.paypal.com/us/home","https://www.paypal.com/signin");
     if( url                                                     .match("https://www.paypal.com/signin") || url.match("https://www.paypal.com/us/signin") )  {
         loginWhenFieldSet( await waitFor(()=>gi("password")), gi("btnLogin"));
     }
+
 
                                                                 redirect("https://play.google.com/store/apps/details?id=com.personalcapital.pcapandroid",  "https://home.personalcapital.com/page/login/goHome");  // from google play app page
                                                                 // redirect to transactions tab
@@ -229,7 +232,7 @@
 
 
                                                                 redirect("https://www.penfed.org/logoff/?reas=to", "https://www.penfed.org/login/");        // timed out page
-/*** PENFED ***/                                                 redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
+/*** PENFED ***/                                                redirect("https://www.penfed.org/",                "https://www.penfed.org/login/");
     // username
     if(url                                                      == "https://www.penfed.org/login/"){
         let user_field = await waitFor(()=>gi("mlloginusernameinput"));
@@ -241,7 +244,7 @@
         loginWhenFieldSet( await waitFor(()=>gi("ctl00_ctl00_MainContentPlaceHolder_cphSecurityMainContent_txtPassword")), gi("ctl00_ctl00_MainContentPlaceHolder_imgLogon") );
     }
 
-/*** SAVVYMONEY ***/                                             redirect("https://www.savvymoney.com/", "https://www.savvymoney.com/login");
+/*** SAVVYMONEY ***/                                            redirect("https://www.savvymoney.com/", "https://www.savvymoney.com/login");
     if(url                                                      .match("https://www.savvymoney.com/login")){
         loginWhenFieldSet(await waitFor(()=>gi("password-sign-in")), gi("login-btn") );
     }
@@ -274,7 +277,7 @@
                                                             //    redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::",  loginPage); // account home page, we'll redirect if error by looking for element instead
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
                                                                 redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page (there's 2)
-/*** UIECU ***/                                                  redirect("https://uoficreditunion.org/",                                     loginPage);
+/*** UIECU ***/                                                 redirect("https://uoficreditunion.org/",                                     loginPage);
     if( url                                                     == loginPage ){
         await sleep(1000);
         // reload on error
@@ -319,7 +322,7 @@
 
 
                                                                 redirect("https://www.uber.com/es/ec/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
-/*** UBER ***/                                                   redirect("https://www.uber.com/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
+/*** UBER ***/                                                  redirect("https://www.uber.com/","https://auth.uber.com/login/?next_url=https%3A%2F%2Friders.uber.com");
     if( url                                                     .match("https://auth.uber.com/login/") )  {
         /*      field doesnt recognize value when clicked. Neither automated or manually.
         let user_field = await waitFor(()=>gi('useridInput'));
