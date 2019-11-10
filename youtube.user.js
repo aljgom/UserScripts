@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube
 // @namespace    aljgom
-// @version      0.2
+// @version      0.21
 // @description  Various modifications:
 //               Loop and reverse playlist
 //               Autoreload on error
@@ -113,6 +113,7 @@
         debug('ended add buttons loop');
     }
     setInterval(()=>{   // keep repeating to read when video changes
+        if(document.location.toString().match("embed")) return;             // don't add in embeded mode
         if(!unsafeWindow.buttons[0] || !unsafeWindow.buttons[0].children || !unsafeWindow.buttons[0].children[0]) {
             log('Adding buttons: Waiting for reference button');
             return;
@@ -261,56 +262,54 @@
     })();
 
 
+
     /*** SKIP VIDEO ***/
+    (async function skipVideos(){
+        if(!GM_getValue('skip')) GM_setValue('skip','[]');
+        let skip = JSON.parse(GM_getValue('skip'));
+        setInterval(async function skipCheck(){                                                        debug('interval: skip vid');
+            if(!document.location.href.match('https://www.youtube.com/watch')) return
+            let video = document.getElementsByClassName("video-stream")[0];
+            let currentVid = document.location.toString();
+            if(document.location.toString().match("embed")){
+             currentVid = document.getElementsByClassName("ytp-title-link")[0].href;
+            }
+            window.videoCode = currentVid.match(/(&v=|\?v=|embed\/)(.*?)(&|$|\?)/)[2];  // works on embeded or normal site
 
-    if(! localStorage.skip) localStorage.skip = '[]';
-    var skip = JSON.parse(localStorage.skip);
-    setInterval(async ()=>{                                                        debug('interval: skip vid');
-                     var video = document.getElementsByClassName("video-stream")[0];
-                     var currentVid = document.location.toString();
-                     if(document.location.toString().match("embed")){
-                         currentVid = document.getElementsByClassName("ytp-title-link")[0].href;
-                     }
-                     window.videoCode = currentVid.match(/(&v=|\?v=|embed\/)(.*?)(&|$|\?)/)[2];  // works on embeded or normal site
+            if( skip.indexOf(window.videoCode) > -1 ){
+                if(reverse){
+                    if( currentVid.match(/index=1($|&)/) ) // & or end of line
+                        document.location = 'https://www.youtube.com/watch?v=bIUgT4H-zWw&index=236&t=1s&list=UUZwegPHTG4gvnR0WLzaq5OQ';
+                    else{
+                        video.pause();
+                        document.getElementsByClassName('ytp-prev-button')[0].click();
+                        await sleep(100);
+                        document.getElementsByClassName('ytp-prev-button')[0].click();
+                    }
+                }
+                else document.getElementsByClassName("ytp-next-button")[0].click();
+            }
+        },3000);
 
-                     if( skip.indexOf(videoCode) > -1 ){
-                         if(reverse){
-                             if( currentVid.match(/index=1($|&)/) ) // & or end of line
-                                 document.location = 'https://www.youtube.com/watch?v=bIUgT4H-zWw&index=236&t=1s&list=UUZwegPHTG4gvnR0WLzaq5OQ';
-                             else{
-                                 video.pause();
-                                 document.getElementsByClassName('ytp-prev-button')[0].click();
-                                 await sleep(100);
-                                 document.getElementsByClassName('ytp-prev-button')[0].click();
-                             }
-                         }
-                         else document.getElementsByClassName("ytp-next-button")[0].click();
-                         /*
-      waitFor('document.getElementsByClassName("ytp-next-button")[0]', 10*1000)
-      .then((el)=>{
-          log(el)
-          el.click();
-      })      ;
-      */
-                     }
-    },3000);
+        function addToSkip(){
+            skip.push(window.videoCode);
+            GM_setValue('skip', JSON.stringify(skip));
+        }
 
-    function addToSkip(){
-        skip.push(videoCode);
-        localStorage.skip = JSON.stringify(skip);
-    }
-
+        // insert skip button
+        addToButtons("Add To Skip", addToSkip);
+        debug('passed skip vid');
+    })();
 
 
-    /********  KILLS THE REST OF THE SCRIPT IN ENBEDDED MODE !!!!!    ***/
+
+
+/********  KILLS THE REST OF THE SCRIPT IN ENBEDDED MODE !!!!!    ***/
     if(document.location.toString().match("embed")) return;
 
     /******/
 
 
-    // insert skip button
-    addToButtons("Add To Skip", addToSkip);
-    debug('passed skip vid');
 
     /*** REMOTE CONTROL ***/
 
