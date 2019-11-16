@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Continuous Play
 // @namespace    aljgom
-// @version      0.1
+// @version      0.12
 // @description  When playing in the background for a long time, youtube will eventually stop the video and
 //               ask if we want to contininue playing. This will click yes automatically when the dialog shows up.
 // @author       aljgom
@@ -16,12 +16,15 @@
     //debug = console.log.bind(console)
 
     setInterval(()=>{
-        if(document.querySelectorAll('paper-dialog')[0] &&
-            document.querySelectorAll('paper-dialog .line-text')[0].innerText.match(/Video angehalten|Video stopped/) &&
-            document.querySelectorAll('paper-dialog')[0].style.display != "none" )
-        {
+        if(document.querySelectorAll('paper-dialog')[0] && document.querySelectorAll('paper-dialog')[0].style.display != "none" ){
+            if(document.querySelectorAll('paper-dialog .line-text')[0].innerText.match(/Video angehalten|Video stopped/) ){
                 document.querySelectorAll('paper-dialog #confirm-button')[0].click();
+            }
+            if(document.querySelectorAll('paper-dialog .line-text')[0].innerText.match(/YouTube Premium/) ){
+                document.querySelectorAll('paper-dialog #cancel-button')[0].click();
+            }
         }
+
     },5*1000);
 
 
