@@ -15,6 +15,7 @@
         "GM_info": true,
         "GM_setValue": true,
         "GM_getValue": true,
+        "GM_addValueChangeListener":true,
         "waitFor": true,
         "gc":true,
         "gi": true,

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube
 // @namespace    aljgom
-// @version      0.21
+// @version      0.31
 // @description  Various modifications:
 //               Loop and reverse playlist
 //               Autoreload on error
@@ -15,6 +15,7 @@
 //               Add Date to fullscren title, skip videos depening on date
 //               Keyboard speed control
 //               Add Playlist name to Tab Title
+//               Button to pause/play all active videos at once -  When multiple videos are being played at the same time, this button will pause them all, and restart playing them if pressed again, while leaving other videos alone
 // @author       aljgom
 // @match        http://www.youtube.com/watch*
 // @match        https://www.youtube.com/watch*
@@ -26,6 +27,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
+// @grant        GM_addValueChangeListener
 // @grant        window.close
 // ==/UserScript==
 
@@ -96,18 +98,21 @@
 
 
     /*** ADDING BUTTONS **/
-    newButtons = [];
-    function addToButtons(label, click){
-        newButtons.push({label:`| ${label} |`, click:click});
+    let newButtons = [];
+    function addToButtons(label, click, id){
+        newButtons.push({label:label, click:click, id:id});
     }
 
     function addButtons(){  // rename this.
-        newButtons.forEach(nb=>{
+        newButtons.forEach( nb=>{
             try{
-                var btn = buttons[0].children[0];
-                var x = document.createElement('div'); x.innerHTML = nb.label; x.style.color = 'gray'; x.style.cursor ="pointer";
+                let btn = unsafeWindow.buttons[0].children[0];
+                let x = document.createElement('div');
+                x.innerHTML = `| ${nb.label} |`;
+                x.style.color = 'gray'; x.style.cursor ="pointer";
                 btn.parentElement.insertBefore(x,btn);
                 x.onclick = nb.click;
+                x.id = nb.id;
             }catch(err){             console.log("%cError adding '"+JSON.stringify(nb)+"' in addToButtons()",'orange');  throw err;  }
         });
         debug('ended add buttons loop');
@@ -118,7 +123,7 @@
             log('Adding buttons: Waiting for reference button');
             return;
         }
-        if(buttons[0].children.length>5) return;
+        if(unsafeWindow.buttons[0].children.length>5) return;
         addButtons();
     }, 2000);
 
@@ -312,55 +317,94 @@
 
 
     /*** REMOTE CONTROL ***/
+    /* Pop-up a small seperate window that is able to control the video */
+    (async function addRemoteControl(){
 
+        // Control Window
 
-    // Control Window
-
-    if(typeof(ws) == "undefined") var ws = [];							// windows opened
-    ws.closeAll = function(){
-        while(ws.length > 0){
-            ws[0].close();
-            ws.splice(0,1);
-        }
-    };
-    window.onbeforeunload = function(){ws.closeAll();};
-
-    function ControlWindow(){
-        var self = this;
-        self.openerW = window;
-        ws.push(self);
-        self.w = window.open('','','resizable=1,toolbar=0,location=0,status=0,menubar=0,scrollbars=1,width=378,height=114');
-        self.w.moveTo(600,100);
-        self.copyButton = function(label,className) {
-            var btn = document.createElement('button');
-            btn.onclick = function(){self.openerW.document.getElementsByClassName(className)[0].click();};
-            btn.innerHTML = label;
-            return btn;
+        if(typeof(ws) == "undefined") var ws = [];							// windows opened
+        ws.closeAll = function(){
+            while(ws.length > 0){
+                ws[0].close();
+                ws.splice(0,1);
+            }
         };
-        setTimeout(function(){
-            self.w.document.title = "ꘖ - Youtube Remote";
-            self.w.document.getElementsByTagName('head')[0].appendChild(style);                            // insert css
-            self.w.document.body.appendChild( self.copyButton('Prev','ytp-prev-button') );
-            self.w.document.body.appendChild( self.copyButton('Play','ytp-play-button') );
-            self.w.document.body.appendChild( self.copyButton('Next','ytp-next-button') );
-            self.w.document.body.appendChild( self.copyButton('Mute','ytp-mute-button') );
-            self.w.document.body.appendChild( self.copyButton('Full Screen','ytp-fullscreen-button') );
-            //add favicon   TODO: not working. Could probably create a local page with the favicon specified, and open that page and run the code, instead of using an empty page
-            var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-            link.type = 'image/x-icon';
-            link.rel = 'shortcut icon';
-            link.href = 'https://www.youtube.com/yts/img/favicon_32-vfl8NGn4k.png';
-            link.sizes= '32x32';
-            self.w.document.getElementsByTagName('head')[0].appendChild(link);
-        },500);
-        self.close = function(){self.w.close();};
-    }
+        window.onbeforeunload = function(){ws.closeAll();};
+
+        function ControlWindow(){
+            var self = this;
+            self.openerW = window;
+            ws.push(self);
+            self.w = window.open('','','resizable=1,toolbar=0,location=0,status=0,menubar=0,scrollbars=1,width=378,height=114');
+            self.w.moveTo(600,100);
+            self.copyButton = function(label,className) {
+                var btn = document.createElement('button');
+                btn.onclick = function(){self.openerW.document.getElementsByClassName(className)[0].click();};
+                btn.innerHTML = label;
+                return btn;
+            };
+            setTimeout(function(){
+                self.w.document.title = "ꘖ - Youtube Remote";
+                self.w.document.getElementsByTagName('head')[0].appendChild(style);                            // insert css
+                self.w.document.body.appendChild( self.copyButton('Prev','ytp-prev-button') );
+                self.w.document.body.appendChild( self.copyButton('Play','ytp-play-button') );
+                self.w.document.body.appendChild( self.copyButton('Next','ytp-next-button') );
+                self.w.document.body.appendChild( self.copyButton('Mute','ytp-mute-button') );
+                self.w.document.body.appendChild( self.copyButton('Full Screen','ytp-fullscreen-button') );
+                //add favicon   TODO: not working. Could probably create a local page with the favicon specified, and open that page and run the code, instead of using an empty page
+                var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                link.type = 'image/x-icon';
+                link.rel = 'shortcut icon';
+                link.href = 'https://www.youtube.com/yts/img/favicon_32-vfl8NGn4k.png';
+                link.sizes= '32x32';
+                self.w.document.getElementsByTagName('head')[0].appendChild(link);
+            },500);
+            self.close = function(){self.w.close();};
+        }
+
+
+        // insert remote button
+        addToButtons("Remote Control", function(){ new ControlWindow(); });
+        debug('passed remote control');
+
+    })();
 
 
 
-    // insert remote button
-    addToButtons("Remote Control", function(){ new ControlWindow(); });
-    debug('passed remote control');
+
+    /*** PAUSE/PLAY ALL ***/
+    /* When multiple videos are being played at the same time, this button will pause them all, and restart playing them if pressed again, while leaving other videos alone */
+    (async function addPausePlayAll(){
+        let wasPlaying;
+        GM_addValueChangeListener('pausePlayAll', function(name, old_value, new_value) {
+            if(new_value == '') return;
+            let action = new_value
+            let video = document.getElementsByClassName("video-stream")[0];
+            let pausePlayAllBtn = document.getElementById('pausePlayAllBtn');
+            let buttonLabel = pausePlayAllBtn.innerHTML;
+            if(action == 'play'){
+                pausePlayAllBtn.innerHTML = buttonLabel.replace('Play','Pause');
+                if(video.paused && wasPlaying) document.getElementsByClassName('ytp-play-button')[0].click();
+            }
+            else{  // pause
+                pausePlayAllBtn.innerHTML = buttonLabel.replace('Pause','Play')
+                wasPlaying = !video.paused;
+                if(!video.paused) document.getElementsByClassName('ytp-play-button')[0].click();
+            }
+            GM_setValue('pausePlayAll', '')             // reset shared variable
+        })
+
+        function pausePlayAllClick(){
+            if(this.innerHTML.match('Play'))
+                GM_setValue('pausePlayAll', 'play')
+            else
+                GM_setValue('pausePlayAll', 'pause')
+        }
+        addToButtons("Pause All", pausePlayAllClick, 'pausePlayAllBtn');
+        debug('passed add pause/play all button');
+
+    })();
+
 
 
     /*** INSERT CSS ***/
