@@ -169,7 +169,7 @@
                         //log(day)
                         if(current != day.date.split('-')[1]) continue	// ignore ending days of prev month, and begining of next. Use only current month
                         out += `%c${day.date.split('-')[2]}%c `;		// 2 styles, for the day, and for the white space
-                        styles.push(`color:${day.available ? 'lightgreen' : 'lightgray'}; background:${isToday(day.date) ? (day.available ? '#005015' : '#671900') :''}`)
+                        styles.push(`color:${day.available_for_checkin ? 'lightgreen' : 'lightgray'}; background:${isToday(day.date) ? (day.available_for_checkin ? '#005015' : '#671900') :''}`)
                         styles.push('')									// style for the blank space between numbers
                     }
                     out += "| "
