@@ -2,12 +2,15 @@
 // @name         Focus on one task
 // @namespace    aljgom
 // @author       aljgom
-// @description  Prompts for what is the highest priority task, every 5 minutes asks to retype it, or enter a new one by writing 'new' in the prompt
-// @version      0.12
+// @description  Prompts for what is the highest priority task or enter a new one by writing 'new' in the prompt,
+//               for each tab that is opened, it asks what task it is for. Re-focuses on the tabs of the most important task
+// @version      0.2
 // @match        http://*/*
 // @match        https://*/*
+// @grant        window.focus
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_addValueChangeListener
 // @noframes
 // ==/UserScript==
 
@@ -81,6 +84,7 @@
                     await sleep(100)
                     if(!task) continue;
                     if(levenshteinDistance(GM_getValue('task'), task) < task.length/4+1){   // allow some typos
+                        switchWindow(task);
                         break
                     }
                     else{
@@ -92,22 +96,53 @@
         }
     }
 
+    let switchWindow = task=>{
+        GM_setValue('switchWindow', '');    // empty it first so change event listener triggers even if task is the same
+        GM_setValue('switchWindow', task);
+    }
+
     let promptNewTask = async ()=>{
         let task;
         while(document.hasFocus()){
-            task = prompt('Enter highest priority task')
             await sleep(100)
-            if(['new', undefined, null].includes(task) || task.length < 2) continue;
+            task = prompt('Enter highest priority task')
+            if(['new', undefined, null].includes(task) || task.length < 2) continue;    // can't be 'new', empty, or short
             else{
                 GM_setValue('task', task);
+                switchWindow(task);
                 break
             }
         }
     }
 
+    let windowTask
+    let setWindowTask = async ()=>{
+        let task;
+        while(document.hasFocus() && !windowTask ){
+            await sleep(100)
+            task = prompt('Enter task for this window:')        // be careful, after runing this line, a window.focus event is trigered again
+            if(['new', undefined, null].includes(task) || task.length < 2) continue;    // can't be 'new', empty, or short
+            else{
+                windowTask = task;
+                break
+            }
+        }
+    }
+
+    await sleep(5*1000);
+    // if the url cointains 'task=' use that as the task
+    if(urlParams.get('task')) {
+        windowTask = urlParams.get('task')
+    }
+    else{
+        setWindowTask();
+        addEventListener('focus', async ()=>{
+            await sleep(5*1000);
+            setWindowTask()
+        })
+    }
 
     if(GM_getValue('prompted') == undefined) {      // no task
-        await sleep(5*1000)
         GM_setValue('prompted', Date.now());
         promptNewTask();
     }
@@ -117,6 +152,15 @@
         promptNewTask();
     }
     else retypeTask();
+
+    // switch to this window if the task entered matches this window's task
+    GM_addValueChangeListener('switchWindow', function(name, old_value, new_value) {
+        if(new_value == '') return;
+        let task = new_value;
+        if(levenshteinDistance(windowTask, task) < task.length/4+1){   // allow some typos
+            window.focus();
+        }
+    });
 
     setInterval(retypeTask,5*60*1000);
 })();
