@@ -4,7 +4,7 @@
 // @description  At every 25, or 55 minutes in each hour, it will add a black modal with a 5 minute timer to cover all webpages, and open another window to focus on during that time (eg. to-do list)
 //               If the modal is clicked, it will dissapear briefly, it will also focus on the other window
 //               Keeps track if the browser has been active to skip the next break if there hasn't been activity
-// @version      0.16
+// @version      0.20
 // @match        http://*/*
 // @match        https://*/*
 // @grant        GM_setValue
