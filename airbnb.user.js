@@ -151,7 +151,8 @@
                 promises.push(['%c','']) // push empty, with empty style, new line is added later to it
                 continue;
             }
-            let month = (new Date).getMonth() + ((new Date).getDate()>15 ? 1 : 0)   // previous month until the 15th of the month, afterwards show current month
+            //let month = (new Date).getMonth() + ((new Date).getDate()>15 ? 1 : 0)   // previous month until the 15th of the month, afterwards show current month
+            let month = (new Date).getMonth()+1 // airbnb now returning a 403 if requesting the previous month
             promises.push(fetch(`https://www.airbnb.com/api/v2/calendar_months?_format=with_conditions&count=4&currency=USD&key=d306zoyjsyarp7ifhu67rjxn52tv0t20&listing_id=${id}&locale=en&month=${month}&year=2019`)
             .then(response => response.json())
             .then(async function(json) {
