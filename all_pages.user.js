@@ -27,7 +27,9 @@ let urlParams = unsafeWindow.urlParams = new URLSearchParams( window.location.hr
 function gi(id){ return document.getElementById(id); }
 function gc(cl){ return document.getElementsByClassName(cl); }
 
-if(!url.match(/.google.com|.youtube.com|.wallethub.com|.creditkarma|.usbank/)){      // breaks google docs, probably other google apps too
+
+// TODO remove this from being global
+if(!url.match(/.google.com|.youtube.com|.wallethub.com|.creditkarma|.usbank|.linkedin/)){      // breaks google docs, probably other google apps too
 // Add sorting function to be able to sort using a key function
     Array.prototype.sortBy = function(key_func, reverse=false){
         return this.sort( (a, b) => {
