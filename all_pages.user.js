@@ -57,21 +57,24 @@ function addFunc(f,force){
 }
 
 
+/* log() is thes same as console.log */
+function log(){console.log(...arguments)}
+addFunc( log );
 
 
-// usage: log({___:10},..);
-function log(){                // log = console.log.bind(console)
-    var indent = arguments[0] && arguments[0].___;
-    if(indent) console.log( Array(indent).join(' ')+arguments[1], ...(Array(...arguments)).splice(2) ); // concatenates first arg in case it's using css formatting
-    else    console.log(...arguments);
-} addFunc( log );
+/* Logs with indentation */
+function log___(){
+    console.log( Array(60).join(' ')+arguments[0], ...(Array(...arguments)).splice(1) );  // concatenates first arg in case it's using css formatting
+}  addFunc( log___ );
 
-function log_(){
-    log({___:60},...arguments );
-}  addFunc( log_ );
 
-log___ = log_;
 
+/* Pythonesque: */
+function len(a){return a.length;}
+addFunc(len);
+
+let zip = (...rows) => [...rows[0]].map((_,c) => rows.map(row => row[c]));
+addFunc(zip)
 
 
 /* Returns a promise to sleep, can be used with await
@@ -231,6 +234,8 @@ function doneClicking(){
 
 /* Used for testing if the selection of an element hasn't changed
  * Tests if the passed element exists, if not consoles.logs error message
+ * Usage: in the calling script, set testElement.scriptName = GM_info.script.name
+ *        then use it.
  */
 
 function testElement(elName, el){
