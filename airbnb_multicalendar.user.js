@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Airbnb Multicalendar
 // @namespace    aljgom
-// @version      0.13
+// @version      0.131
 // @description  Adds guest photos to the bookings in the multicalendar
 //               Changes the background color of bookings that include today, to show check outs, check ins, and current guests. Creates a set with all the guests for the current day
 // @author       aljgom
@@ -17,11 +17,11 @@
 
     //liveReload('airbnb_multicalendar.user.js')
     document.body.style.zoom = .8
-
+    
     let sendMessage = false;
     let guests = new Set()
     let container = document.createElement('div');
-    let bookings = await waitFor(()=>document.getElementsByClassName('_1vd7r9f'))
+    let bookings = await waitFor(()=>document.getElementsByClassName('_160al44'))
     bookings[0].click();
     await waitFor(()=>document.querySelectorAll('._1okh7pi0 div._czm8crp')[0]) // wait for guest details to load (this is the selector for check-in)
 
@@ -76,8 +76,8 @@
       //  log(guests)
     };
     let check_beds = ()=>{
-        // let bookings = await waitFor(()=>document.getElementsByClassName('_1vd7r9f'))
-        let bookings = document.getElementsByClassName('_1vd7r9f');
+        // let bookings = await waitFor(()=>document.getElementsByClassName('_160al44'))
+        let bookings = document.getElementsByClassName('_160al44');
         log('bookings', bookings)
         if(check_beds.prev == bookings){
             log('same bookings')
