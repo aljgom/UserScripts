@@ -129,7 +129,7 @@
         }
     }
 
-    await sleep(5*1000);
+    await sleep(10*1000);
     // if the url cointains 'task=' use that as the task
     if(urlParams.get('task')) {
         windowTask = urlParams.get('task')
