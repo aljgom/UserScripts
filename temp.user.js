@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Temp Scripts
 // @namespace    aljgom
-// @version      0.21
+// @version      0.31
 // @description  Short/temporary scripts that having a separate page for each seems overkill
 // @author       aljgom
 // @match        http://*/*
@@ -300,10 +300,16 @@
     }
 
 
-    //
-    if(url.match("-----------------------")){
+    // WHITE NOISE VIDEO - INCREASE VOLUME SLOWLY SO IT'S UNNOTICEABLE
+    // when trying to not wake someone up, white noise can be used so other noises are less noticeable
+    if(url == "https://www.youtube.com/watch?v=wzjWIxXBs_s"){
         identify();
-
+        let video = document.querySelector('video');
+        await waitFor(()=> video.currentTime > 0);                       // wait for initialized video
+        video.volume =.01;
+        video.currentTime = 0;
+        setTimeout(()=>video.currentTime = 0 , 60*60*1000)                // restart video after every hour
+        while((video.volume *= 1.05)<.97){ log(video.volume); await sleep(5*1000); }
     }
 
 
