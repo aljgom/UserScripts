@@ -20,7 +20,7 @@
         console.log('waiting for All Pages')
         await new Promise(resolve=>setInterval(resolve, 200))
     }
-    
+
     function gi(id){ return document.getElementById(id); }
     function gc(cl){ return document.getElementsByClassName(cl); }
     let sleep = ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -286,8 +286,9 @@
                                                             //    redirect("https://apstp.pscu.com/AP/APCardholder/?wicket:interface=:0::::",  loginPage); // account home page, we'll redirect if error by looking for element instead
                                                                 redirect("https://apstp.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page
                                                                 redirect("https://apphx.pscu.com/AP/APCardholder/pages/sessiontimeout",      loginPage); // timeout page (there's 2)
+                                                                redirect("https://uiecu.org/",                                               loginPage);
 /*** UIECU ***/                                                 redirect("https://uoficreditunion.org/",                                     loginPage);
-    if( url                                                     == loginPage ){
+    if( url                                                     .match( loginPage )){
         await sleep(1000);
         // reload on error
         if(document.body.innerHTML.match('An Error Occurred While Processing Your Request'))
