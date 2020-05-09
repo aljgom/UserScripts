@@ -60,10 +60,10 @@ def parse_file(path, file_name, output):
     make_link = lambda text, url, alt='': f"[{text}]({url} \"{alt}\")"
     source_link = make_link("Source Code", source_code, "Source Code")
     install_link = make_link("Download/Install", install, "Download/Install")
+    gif = f"![]({'..' if path == './old' else '.'}/demos/{file_name.split('.')[0]}.gif)"
 
     output.write(f"| **{name}** <br> {source_link} {install_link}")
-    output.write(f"| {description} <br> _Match:_ <br> {match} |\n")
-
+    output.write(f"| {description} <br> _Match:_ <br> {match} <br> {gif}|\n")
 
 
 
@@ -74,12 +74,13 @@ def create_table(path):
         output.write('| Name / File | Description / Match |\n')
         output.write('|---|---|\n')
         if path == "./":
-            output.write('| [Old Userscripts](old/) | Older Userscripts | \n')
+            output.write('| [Old UserScripts](old/) | Older Userscripts | \n')
         # else:
         #     output.write('| fd[Main Userscripts](/../) | Return to main table | \n')
         for file_name in os.listdir(path):
             if "user.js" in file_name:
                 parse_file(path, file_name, output)
+    merge_readme(path)
 
 
 def merge_readme(path):
@@ -95,6 +96,4 @@ def merge_readme(path):
 
 
 create_table('./')
-merge_readme('./')
 create_table('old/')
-merge_readme('old/')
