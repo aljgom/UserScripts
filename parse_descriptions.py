@@ -55,15 +55,19 @@ def parse_file(path, file_name, output):
     # output.write("| {} | {} | {} | {} |\n".format(name, description, match, file_name))
     # source code: github.com/aljgom/UserScripts/blob/master/airbnb.user.js
     # install:     aljgom.github.io/UserScripts/airbnb.user.js
+
+    make_link = lambda text, url, alt='': f"[{text}]({url} \"{alt}\")"
+
     source_code = f"https://github.com/aljgom/UserScripts/blob/master/{path}{file_name}"
     install =     f"https://aljgom.github.io/UserScripts/{path}{file_name}"
-    make_link = lambda text, url, alt='': f"[{text}]({url} \"{alt}\")"
+    gif_path =    f"{'..' if path == './old' else '.'}/demos/{file_name.split('.')[0]}.gif"
+
     source_link = make_link("Source Code", source_code, "Source Code")
     install_link = make_link("Download/Install", install, "Download/Install")
-    gif = f"![]({'..' if path == './old' else '.'}/demos/{file_name.split('.')[0]}.gif)"
+    gif_link = make_link(f"![]({gif_path})", gif_path, " ")
 
     output.write(f"| **{name}** <br> {source_link} {install_link}")
-    output.write(f"| {description} <br> _Match:_ <br> {match} <br> {gif}|\n")
+    output.write(f"| {description} <br> _Match:_ <br> {match} <br> {gif_link}|\n")
 
 
 
